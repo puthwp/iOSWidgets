@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AccountCardsViewItem" customModule="OneApp" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AccountCardsViewItem" customModule="iOSWidgets">
             <connections>
                 <outlet property="accountIconImageView" destination="Rm1-rh-LbW" id="Y5p-CI-0VL"/>
                 <outlet property="accountNameLabel" destination="J2f-bi-RhY" id="wVA-NL-QOT"/>

@@ -25,7 +25,12 @@ let package = Package(
             dependencies: [
                 "SkeletonView",
                 "SDWebImage"
-            ]),
+            ],
+            resources: [
+                .process("Resources"),
+                .process("Extensions")
+              ]),
+        
         .testTarget(
             name: "iOSWidgetsTests",
             dependencies: ["iOSWidgets"]),
