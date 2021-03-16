@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
-class PrimaryTextView: UITextView, PrimaryTextinput {
+public class PrimaryTextView: UITextView, PrimaryTextinput {
     var isEnabled: Bool = true
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()

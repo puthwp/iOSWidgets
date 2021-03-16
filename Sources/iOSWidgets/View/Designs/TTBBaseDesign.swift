@@ -14,7 +14,7 @@ private enum Design {
     static let halfScreenContentFrame = CGRect(x: 0, y: 280, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 280)
 }
 
-protocol TTBBaseDesign: UIViewController {
+public protocol TTBBaseDesign: UIViewController {
     func setNavigationDesign()
 }
 
@@ -33,7 +33,7 @@ extension TTBBaseDesign {
     }
 }
 
-protocol TTBBaseBlueDesign: TTBBaseDesign {
+public protocol TTBBaseBlueDesign: TTBBaseDesign {
     func setTitleNavigation(title: String)
     func setupLayout()
 }
@@ -56,7 +56,7 @@ extension TTBBaseBlueDesign {
     }
 }
 
-protocol TTBBaseWhiteDesign: TTBBaseDesign {
+ public protocol TTBBaseWhiteDesign: TTBBaseDesign {
     func setTitleNavigation(title: String)
     func setupLayout()
 }

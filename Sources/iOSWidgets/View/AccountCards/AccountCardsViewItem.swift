@@ -10,7 +10,7 @@ import UIKit
 import SDWebImage
 import SkeletonView
 
-class AccountCardsViewItem: UIView, LoadableNib {
+public class AccountCardsViewItem: UIView, LoadableNib {
     
     private enum Design {
         
@@ -103,7 +103,7 @@ class AccountCardsViewItem: UIView, LoadableNib {
     
 }
 
-protocol DisplayAccountItems {
+public protocol DisplayAccountItems {
     var accountIconURL: URL? { get set }
     var accountName: String? { get set }
     var accountNumber: String? { get set }

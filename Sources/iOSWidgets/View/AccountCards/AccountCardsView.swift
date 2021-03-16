@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SkeletonView
 
-protocol TTBAccountCardViewsProtocol: class {
+public protocol TTBAccountCardViewsProtocol: class {
     func createCardViews(_ controller: UIViewController?) -> [DisplayAccountItems]
     func cardDidSelected(_ vc: UIViewController,item: DisplayAccountItems, at index: Int)
     func controller() -> UIViewController
@@ -17,7 +17,7 @@ protocol TTBAccountCardViewsProtocol: class {
 }
 
 @IBDesignable
-class AccountCardsView: UIView {
+public class AccountCardsView: UIView {
 
     private enum Constants {
         static let titleFont = UIFont.h3WhiteLeft
