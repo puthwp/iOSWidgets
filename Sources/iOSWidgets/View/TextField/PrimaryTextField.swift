@@ -57,7 +57,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         }
     }
     
-    override var isEnabled: Bool {
+    public override var isEnabled: Bool {
         didSet {
             switch isEnabled {
             case true:
@@ -104,7 +104,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         if error != nil {
             inputState = .error
@@ -115,13 +115,13 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         updateLayout()
     }
     
-    override func becomeFirstResponder() -> Bool {
+    public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
         inputState = hasTextInput ? .typing : .focus
         return true
     }
     
-    override func resignFirstResponder() -> Bool {
+    public override func resignFirstResponder() -> Bool {
         super.resignFirstResponder()
         guard inputState != .error else {
             return true

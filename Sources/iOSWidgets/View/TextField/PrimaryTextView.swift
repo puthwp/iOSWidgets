@@ -118,7 +118,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         updateLayout()
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         if error != nil {
             inputState = .error
@@ -127,14 +127,14 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         self.textContainerInset = inputInset
     }
     
-    override func becomeFirstResponder() -> Bool {
+    public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
         inputState = hasTextInput ? .typing : .focus
         updateLayout()
         return true
     }
     
-    override func resignFirstResponder() -> Bool {
+    public override func resignFirstResponder() -> Bool {
         super.resignFirstResponder()
         guard inputState != .error else {
             return true
