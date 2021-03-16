@@ -8,11 +8,11 @@
 import Foundation
 import UIKit
 
-protocol LoadableNib: UIView {
+public protocol LoadableNib: UIView {
 }
 
 extension LoadableNib {
-    func loadView() -> UIView {
+    public func loadView() -> UIView {
         let bundleName = Bundle(for: type(of: self))
         let nibName = String(describing: type(of: self))
         let nib = UINib(nibName: nibName, bundle: bundleName)
@@ -21,7 +21,7 @@ extension LoadableNib {
         return view
     }
     
-    func initSubView(container: UIView) {
+    public func initSubView(container: UIView) {
         NSLayoutConstraint.activate([
             self.topAnchor.constraint(equalTo: container.topAnchor, constant: 0),
             self.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: 0),

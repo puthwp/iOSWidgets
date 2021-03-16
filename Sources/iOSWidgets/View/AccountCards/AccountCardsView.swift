@@ -10,10 +10,10 @@ import UIKit
 import SkeletonView
 
 public protocol TTBAccountCardViewsProtocol: class {
-    func createCardViews(_ controller: UIViewController?) -> [DisplayAccountItems]
-    func cardDidSelected(_ vc: UIViewController,item: DisplayAccountItems, at index: Int)
-    func controller() -> UIViewController
-    func dismiss(_ controller: UIViewController?)
+    public func createCardViews(_ controller: UIViewController?) -> [DisplayAccountItems]
+    public func cardDidSelected(_ vc: UIViewController,item: DisplayAccountItems, at index: Int)
+    public func controller() -> UIViewController
+    public func dismiss(_ controller: UIViewController?)
 }
 
 @IBDesignable
@@ -48,18 +48,18 @@ public class AccountCardsView: UIView {
         return Int(scrollView.contentOffset.y / scrollView.frame.width)
     }
     
-    @IBInspectable var title: String = "" {
+    @IBInspectable public  var title: String = "" {
         didSet {
             titleLabel.text = title
         }
     }
-    @IBInspectable var titleColor: UIColor = .primaryHonestWhite {
+    @IBInspectable public  var titleColor: UIColor = .primaryHonestWhite {
         didSet {
             titleLabel.textColor = titleColor
         }
     }
     
-    weak var datasource: TTBAccountCardViewsProtocol? {
+    public weak var datasource: TTBAccountCardViewsProtocol? {
         didSet {
             allItems = datasource?.createCardViews(nil)
             paging.numberOfPages = numberOfPagingDot
@@ -71,7 +71,7 @@ public class AccountCardsView: UIView {
         return dotsCount > Constants.maximumPagingDot ? Constants.maximumPagingDot : dotsCount
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
     }

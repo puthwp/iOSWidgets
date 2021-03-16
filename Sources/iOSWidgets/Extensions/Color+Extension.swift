@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIColor {
+public extension UIColor {
 
     @nonobjc public class var primaryConfidentBlue: UIColor {
         return UIColor(red: 0.0, green: 80.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
