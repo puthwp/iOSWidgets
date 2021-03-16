@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-protocol PillCategorySourceProtocol: class {
+public protocol PillCategorySourceProtocol: class {
     func createPill() -> [String]?
     func didSelected(item: String, index: Int)
     func didDeselected(item: String, index: Int)
 }
 
 @IBDesignable
-class PrimaryPillCategory: UIView {
+public class PrimaryPillCategory: UIView {
     
     private enum Design {
         static let height: CGFloat = 32

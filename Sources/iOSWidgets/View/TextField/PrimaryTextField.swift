@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
-class PrimaryTextField: UITextField, PrimaryTextinput {
+public class PrimaryTextField: UITextField, PrimaryTextinput {
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
     var helpingTextIconImageView = UIImageView()
