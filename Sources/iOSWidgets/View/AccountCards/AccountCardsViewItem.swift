@@ -47,21 +47,21 @@ public class AccountCardsViewItem: UIView, LoadableNib {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(loadView())
+        self.addSubview(loadView(bundle: .module))
         initSubView(container: containerView)
         setupLayout()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.addSubview(loadView())
+        self.addSubview(loadView(bundle: .module))
         initSubView(container: containerView)
         setupLayout()
     }
     
     init(_ item: DisplayAccountItems) {
         super.init(frame: .zero)
-        self.addSubview(loadView())
+        self.addSubview(loadView(bundle: .module))
         NSLayoutConstraint.activate([
             self.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0),
             self.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 0),
