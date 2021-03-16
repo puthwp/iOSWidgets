@@ -27,7 +27,8 @@ let package = Package(
                 "SDWebImage"
             ],
             resources: [
-                .process("Resources")
+                .process("Resources"),
+                .process("View/AccountCards/AccountCardsViewItem.xib")
               ]),
         
         .testTarget(
