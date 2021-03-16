@@ -47,12 +47,14 @@ public class AccountCardsViewItem: UIView, LoadableNib {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.addSubview(loadView())
         initSubView(container: containerView)
         setupLayout()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        self.addSubview(loadView())
         initSubView(container: containerView)
         setupLayout()
     }
