@@ -9,6 +9,42 @@ import Foundation
 import UIKit
 
 extension UIFont {
+    
+    public class func registeriOSWidgetFonts() {
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-Bold", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-BoldItalic", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-ExtraLight", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-ExtraLightItalic", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-Italic", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-Light", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-LightItalic", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-Medium", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-MediumItalic", fontExtension: "ttf")
+        _ = UIFont.registerFont(bundle: .module, fontName: "Ekachon-Regular", fontExtension: "ttf")
+    }
+    
+    static func registerFont(bundle: Bundle, fontName: String, fontExtension: String) -> Bool {
+            guard let fontURL = bundle.url(forResource: fontName, withExtension: fontExtension) else {
+                fatalError("Couldn't find font \(fontName)")
+            }
+
+            guard let fontDataProvider = CGDataProvider(url: fontURL as CFURL) else {
+                fatalError("Couldn't load data from the font \(fontName)")
+            }
+
+            guard let font = CGFont(fontDataProvider) else {
+                fatalError("Couldn't create font from data")
+            }
+
+            var error: Unmanaged<CFError>?
+            let success = CTFontManagerRegisterGraphicsFont(font, &error)
+            guard success else {
+                print("Error registering font: maybe it was already registered.")
+                return false
+            }
+
+            return true
+        }
 
     public class var specialH1ForAccountSummaryPageNavyRight: UIFont? {
         return UIFont(name: "Ekachon-Bold", size: 28.0)

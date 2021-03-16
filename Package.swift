@@ -27,8 +27,7 @@ let package = Package(
                 "SDWebImage"
             ],
             resources: [
-                .process("Resources"),
-                .process("Extensions")
+                .process("Resources")
               ]),
         
         .testTarget(
