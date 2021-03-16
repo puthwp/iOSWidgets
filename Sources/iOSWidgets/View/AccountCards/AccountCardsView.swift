@@ -124,16 +124,16 @@ class AccountCardsView: UIView {
             ])
             view.accountIconImageView.showAnimatedSkeleton(usingColor: SkeletonAppearance.default.tintColor,
                                                            animation: nil,
-                                                           transition: .crossDissolve(.25))
+                                                           transition: .crossDissolve(0.25))
             view.accountNameLabel.showAnimatedSkeleton(usingColor: SkeletonAppearance.default.tintColor,
                                                        animation: nil,
-                                                       transition: .crossDissolve(.25))
+                                                       transition: .crossDissolve(0.25))
             view.accountNumberLabel.showAnimatedSkeleton(usingColor: SkeletonAppearance.default.tintColor,
                                                          animation: nil,
-                                                         transition: .crossDissolve(.25))
+                                                         transition: .crossDissolve(0.25))
             view.amountLabel.showAnimatedSkeleton(usingColor: SkeletonAppearance.default.tintColor,
                                                   animation: nil,
-                                                  transition: .crossDissolve(.25))
+                                                  transition: .crossDissolve(0.25))
             contenView.addArrangedSubview(view)
             return
         }
