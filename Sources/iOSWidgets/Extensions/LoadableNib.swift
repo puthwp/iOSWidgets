@@ -13,9 +13,8 @@ public protocol LoadableNib: UIView {
 
 extension LoadableNib {
     public func loadView() -> UIView {
-        let bundleName = Bundle(for: type(of: self))
         let nibName = String(describing: type(of: self))
-        let nib = UINib(nibName: nibName, bundle: bundleName)
+        let nib = UINib(nibName: nibName, bundle: .module)
         let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
