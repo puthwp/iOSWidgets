@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public extension UIFont {
+extension UIFont {
 
     public class var specialH1ForAccountSummaryPageNavyRight: UIFont? {
         return UIFont(name: "Ekachon-Bold", size: 28.0)

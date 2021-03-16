@@ -18,7 +18,7 @@ public protocol TTBBaseDesign: UIViewController {
     func setNavigationDesign()
 }
 
-extension TTBBaseDesign {
+public extension TTBBaseDesign {
     func setNavigationDesign() {
         if #available(iOS 14.0, *) {
             self.navigationItem.backButtonDisplayMode = .minimal
@@ -38,7 +38,7 @@ public protocol TTBBaseBlueDesign: TTBBaseDesign {
     func setupLayout()
 }
 
-extension TTBBaseBlueDesign {
+public extension TTBBaseBlueDesign {
     
     func setTitleNavigation(title: String) {
         setNavigationDesign()
@@ -56,12 +56,12 @@ extension TTBBaseBlueDesign {
     }
 }
 
- public protocol TTBBaseWhiteDesign: TTBBaseDesign {
+public protocol TTBBaseWhiteDesign: TTBBaseDesign {
     func setTitleNavigation(title: String)
     func setupLayout()
 }
 
-extension TTBBaseWhiteDesign {
+public extension TTBBaseWhiteDesign {
     
     func setTitleNavigation(title: String) {
         setNavigationDesign()
