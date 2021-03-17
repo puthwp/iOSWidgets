@@ -10,10 +10,12 @@ import UIKit
 import SkeletonView
 
 public protocol TTBAccountCardViewsProtocol: class {
-    func createCardViews(_ controller: UIViewController?) -> [CardDisplayItems]?
-    func cardDidSelected(_ vc: UIViewController,item: CardDisplayItems, at index: Int)
-    func controller() -> UIViewController?
-    func dismiss(_ controller: UIViewController?)
+    typealias T = CardDisplayItems
+    typealias V = UIViewController
+    func createCardViews(_ controller: V?) -> [T]?
+    func cardDidSelected(_ vc: V,item: T, at index: Int)
+    func controller() -> V?
+    func dismiss(_ controller: V?)
 }
 
 @IBDesignable
