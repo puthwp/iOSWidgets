@@ -8,9 +8,9 @@
 import UIKit
 
 @IBDesignable
-final class GhostMediumButton: TTBBaseButton {
+public final class GhostMediumButton: TTBBaseButton {
     
-    override func draw(_ rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         buttonDesign = .ghost(.medium, darkMode)
         super.draw(rect)
     }

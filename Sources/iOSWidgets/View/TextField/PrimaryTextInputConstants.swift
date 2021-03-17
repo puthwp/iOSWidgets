@@ -12,7 +12,7 @@ public protocol PrimaryError: Error {
     var description: String? { get }
 }
 
-enum PrimaryInputState: String {
+public enum PrimaryInputState: String {
     case idle
     case focus //first responder with no text
     case typing //first responder with text

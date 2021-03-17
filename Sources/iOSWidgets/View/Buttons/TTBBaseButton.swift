@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-class TTBBaseButton: UIButton {
+public class TTBBaseButton: UIButton {
     
     @IBInspectable var darkMode: Bool = false
     @IBInspectable var leftIcon: Bool = true
     
     var buttonDesign: TTBButtonType = .primary(.large)
     
-    override func draw(_ rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         self.contentHorizontalAlignment = UIControl.ContentHorizontalAlignment.center
         self.translatesAutoresizingMaskIntoConstraints = false
         self.clipsToBounds = true
@@ -28,7 +28,7 @@ class TTBBaseButton: UIButton {
         self.setBackgroundImage(UIImage(color: buttonDesign.design.disableState.backgroundColor), for: .disabled)
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         heightAnchor.constraint(equalToConstant: buttonDesign.design.height).isActive = true
         switch state {
@@ -59,14 +59,14 @@ class TTBBaseButton: UIButton {
         }
     }
     
-    override func setTitle(_ title: String?, for state: UIControl.State) {
+    public override func setTitle(_ title: String?, for state: UIControl.State) {
         super.setTitle(title, for: state)
         self.titleLabel?.textAlignment = .center
         self.titleLabel?.sizeToFit()
         self.titleLabel?.lineBreakMode = .byTruncatingTail
     }
     
-    override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
+    public override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
         let labelMaxWidth = buttonDesign.design.maxWidth - (buttonDesign.design.padding * 2)
         var rect = super.titleRect(forContentRect: contentRect)
         rect.origin.x = buttonDesign.design.padding
@@ -77,7 +77,7 @@ class TTBBaseButton: UIButton {
         return rect
     }
 
-    override func imageRect(forContentRect contentRect: CGRect) -> CGRect {
+    public override func imageRect(forContentRect contentRect: CGRect) -> CGRect {
         var rect = super.imageRect(forContentRect: contentRect)
         rect.origin.x = buttonDesign.design.padding
         rect.origin.y = (rect.height / 2) - (buttonDesign.design.iconSize.height / 2)
@@ -86,7 +86,7 @@ class TTBBaseButton: UIButton {
         return rect
     }
     
-    override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         let rect = self.titleRect(forContentRect: self.bounds)
         var contentWidth = rect.width + (buttonDesign.design.padding * 2)
         if currentImage != nil {

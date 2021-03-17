@@ -10,7 +10,6 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextView: UITextView, PrimaryTextinput {
-    var isEnabled: Bool = true
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
     var helpingTextIconImageView = UIImageView()
@@ -40,49 +39,61 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         }
     }
     
-    @IBInspectable var title: String? {
+    public var isEnabled: Bool = true {
+        didSet {
+            switch isEnabled {
+            case true:
+                inputState = hasTextInput ? .typed : .idle
+            case false:
+                inputState = .disabled
+            }
+            updateLayout()
+        }
+    }
+    
+    @IBInspectable public var title: String? {
         didSet {
             titleLabel.text = title
         }
     }
     
-    @IBInspectable var helpingText: String = "" {
+    @IBInspectable public var helpingText: String = "" {
         didSet {
             createHelpingText()
             setHelpingText(helpingText)
         }
     }
     
-    @IBInspectable var helpingTextIcon: UIImage? {
+    @IBInspectable public var helpingTextIcon: UIImage? {
         didSet {
             createHelpingText()
             helpingTextIconImageView.image = helpingTextIcon
         }
     }
     
-    @IBInspectable var maximumLength = 100
-    @IBInspectable var icon: UIImage? {
+    @IBInspectable public var maximumLength = 100
+    @IBInspectable public var icon: UIImage? {
         didSet {
             createIconImageView()
             iconImageView.image = icon
         }
     }
     
-    @IBInspectable var actionIcon: UIImage? {
+    @IBInspectable public var actionIcon: UIImage? {
         didSet {
             createActionButton()
             actionButton.setImage(actionIcon, for: .normal)
         }
     }
     
-    @IBInspectable var actionIconSelected: UIImage? {
+    @IBInspectable public var actionIconSelected: UIImage? {
         didSet {
             createActionButton()
             actionButton.setImage(actionIconSelected, for: .selected)
         }
     }
     
-    var action: ((UITextField) -> Void)?
+    public var action: ((UITextField) -> Void)?
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)

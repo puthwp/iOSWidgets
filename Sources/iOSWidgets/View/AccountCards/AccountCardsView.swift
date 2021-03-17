@@ -10,9 +10,9 @@ import UIKit
 import SkeletonView
 
 public protocol TTBAccountCardViewsProtocol: class {
-    func createCardViews(_ controller: UIViewController?) -> [DisplayAccountItems]
-    func cardDidSelected(_ vc: UIViewController,item: DisplayAccountItems, at index: Int)
-    func controller() -> UIViewController
+    func createCardViews(_ controller: UIViewController?) -> [CardDisplayItems]?
+    func cardDidSelected(_ vc: UIViewController,item: CardDisplayItems, at index: Int)
+    func controller() -> UIViewController?
     func dismiss(_ controller: UIViewController?)
 }
 
@@ -38,9 +38,9 @@ public class AccountCardsView: UIView {
     private let titleLabel: UILabel = UILabel()
     private let paging: UIPageControl = UIPageControl()
     private let maxPagingNumber = 6
-    private var allItems: [DisplayAccountItems]? {
+    private var allItems: [CardDisplayItems]? {
         didSet {
-            setupCardViews(allItems)
+            setupCardViews()
         }
     }
     
@@ -59,7 +59,7 @@ public class AccountCardsView: UIView {
         }
     }
     
-    public weak var datasource: TTBAccountCardViewsProtocol? {
+    public var datasource: TTBAccountCardViewsProtocol? {
         didSet {
             allItems = datasource?.createCardViews(nil)
             paging.numberOfPages = numberOfPagingDot
@@ -198,7 +198,7 @@ public class AccountCardsView: UIView {
         ].flatMap { $0 })
     }
     
-    private func setupCardViews(_ items: [DisplayAccountItems]?) {
+    private func setupCardViews() {
         scrollView.addSubview(contenView)
         NSLayoutConstraint.activate([
             contenView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
@@ -223,5 +223,20 @@ extension AccountCardsView: UIScrollViewDelegate {
         }
         
         datasource?.cardDidSelected((self.datasource?.controller())!, item: item, at: index)
+    }
+}
+
+public extension TTBAccountCardViewsProtocol {
+    func createCardViews(_ controller: UIViewController?) -> [CardDisplayItems]? {
+        nil
+    }
+    func cardDidSelected(_ vc: UIViewController,item: CardDisplayItems, at index: Int) {
+        
+    }
+    func controller() -> UIViewController? {
+        nil
+    }
+    func dismiss(_ controller: UIViewController?) {
+        
     }
 }

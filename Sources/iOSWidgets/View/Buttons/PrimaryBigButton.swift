@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
-class PrimaryBigButton: UIButton {
+public final class PrimaryBigButton: UIButton {
     
     private enum Design {
         static let buttonSize = CGSize(width: 66, height: 110)
@@ -32,7 +32,7 @@ class PrimaryBigButton: UIButton {
     }
     
     
-    override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
+    public override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
         var rect = super.titleRect(forContentRect: contentRect)
         rect.origin.x = 0
         rect.origin.y = Design.iconSize.height + Design.smallGap
@@ -40,7 +40,7 @@ class PrimaryBigButton: UIButton {
         return rect
     }
 
-    override func imageRect(forContentRect contentRect: CGRect) -> CGRect {
+    public override func imageRect(forContentRect contentRect: CGRect) -> CGRect {
         var rect = super.imageRect(forContentRect: contentRect)
         rect.origin.x = (contentRect.width / 2.0) - (rect.width / 2.0) - 5
         rect.origin.y = 0
@@ -49,7 +49,7 @@ class PrimaryBigButton: UIButton {
         return rect.inset(by: Design.iconSizeInset)
     }
 
-    override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         return Design.buttonSize
     }
     
