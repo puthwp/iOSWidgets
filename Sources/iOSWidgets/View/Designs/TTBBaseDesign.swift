@@ -53,6 +53,15 @@ public extension TTBBaseBlueDesign {
     
     func setupLayout() {
         self.view.backgroundColor = UIColor(patternImage: Design.halfScreenHeaderBackground)
+        let rect = CGRect(x: 0,
+                          y: self.view.bounds.height / 2.0,
+                          width: self.view.bounds,
+                          height: self.view.bounds.height / 2.0)
+        let path = UIBezierPath(rect: rect).cgPath
+        var shape = CAShapeLayer()
+        shape.path = path
+        shape.fillColor = UIColor.primaryHonestWhite.cgColor
+        self.view.layer.insertSublayer(shape, at: 0)
     }
 }
 

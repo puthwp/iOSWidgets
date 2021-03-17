@@ -43,6 +43,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     public var isEnabled: Bool = true {
         didSet {
+            isEditable = isEnabled
             switch isEnabled {
             case true:
                 inputState = hasTextInput ? .typed : .idle

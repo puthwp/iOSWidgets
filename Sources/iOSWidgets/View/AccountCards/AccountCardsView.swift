@@ -116,6 +116,7 @@ public class AccountCardsView: UIView {
     
     public func reloadCards(_ onComplete: (()-> Void)?) {
         allItems = datasource?.createCardViews(nil)
+        clearCardsView()
         guard let items = allItems else {
             let view = AccountCardsViewItem()
             NSLayoutConstraint.activate([
@@ -139,9 +140,6 @@ public class AccountCardsView: UIView {
             return
         }
         paging.numberOfPages = numberOfPagingDot
-        contenView.arrangedSubviews.forEach {
-            $0.removeFromSuperview()
-        }
         items.forEach {
             let view = AccountCardsViewItem($0)
             NSLayoutConstraint.activate([
@@ -151,6 +149,12 @@ public class AccountCardsView: UIView {
             contenView.addArrangedSubview(view)
         }
         onComplete?()
+    }
+    
+    public func clearCardsView() {
+        contenView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
     }
     
     public func scrollToItem(index: Int, animate: Bool) {
@@ -224,20 +228,5 @@ extension AccountCardsView: UIScrollViewDelegate {
         }
         
         datasource?.cardDidSelected((self.datasource?.controller())!, item: item, at: index)
-    }
-}
-
-public extension TTBAccountCardViewsProtocol {
-    func createCardViews(_ controller: UIViewController?) -> [CardDisplayItems]? {
-        nil
-    }
-    func cardDidSelected(_ vc: UIViewController,item: CardDisplayItems, at index: Int) {
-        
-    }
-    func controller() -> UIViewController? {
-        nil
-    }
-    func dismiss(_ controller: UIViewController?) {
-        
     }
 }

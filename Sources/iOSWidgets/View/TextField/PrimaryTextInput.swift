@@ -361,7 +361,7 @@ extension PrimaryTextinput {
             helpingTextLabel.textColor = TextOptionalDesign.Disable.color
             helpingTextIconImageView.isHidden = true
         case .error:
-            titleTopConstraint.isActive = hasTextInput || hasPlaceholder
+            titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Error.titleFont
             titleLabel.textColor = TextFieldStateDesign.Error.titleColor
             self.layer.borderColor = TextFieldStateDesign.Error.borderColor.cgColor
@@ -371,6 +371,8 @@ extension PrimaryTextinput {
             
             helpingTextLabel.textColor = TextOptionalDesign.Error.color
             helpingTextIconImageView.isHidden = false
+            
+            textField?.placeholder = tempPlaceHolder
         }
         titleCenterConstraint.isActive = titleTopConstraint.isActive.revert
     }
