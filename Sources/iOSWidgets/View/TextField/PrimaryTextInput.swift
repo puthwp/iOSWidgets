@@ -248,8 +248,8 @@ extension PrimaryTextinput {
         }
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         superview?.addSubview(actionButton)
-        let path = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
         
+        let path = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
         layerShape = CAShapeLayer()
         layerShape.path = path
         layerShape.fillColor = UIColor.clear.cgColor
