@@ -55,10 +55,10 @@ public extension TTBBaseBlueDesign {
         self.view.backgroundColor = UIColor(patternImage: Design.halfScreenHeaderBackground)
         let rect = CGRect(x: 0,
                           y: self.view.bounds.height / 2.0,
-                          width: self.view.bounds,
+                          width: self.view.bounds.width,
                           height: self.view.bounds.height / 2.0)
         let path = UIBezierPath(rect: rect).cgPath
-        var shape = CAShapeLayer()
+        let shape = CAShapeLayer()
         shape.path = path
         shape.fillColor = UIColor.primaryHonestWhite.cgColor
         self.view.layer.insertSublayer(shape, at: 0)
