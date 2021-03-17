@@ -17,7 +17,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     var titleTopConstraint = NSLayoutConstraint()
     var titleLeftMargin = NSLayoutConstraint()
     var titleRightMargin = NSLayoutConstraint()
-    var heightConstraint = NSLayoutConstraint()
+    public var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
     var actionButton = UIButton()
     public var inputState: PrimaryInputState = .idle
@@ -46,20 +46,20 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         }
     }
     
-    @IBInspectable var title: String? {
+    @IBInspectable public var title: String? {
         didSet {
             titleLabel.text = title
         }
     }
     
-    @IBInspectable var helpingText: String = "" {
+    @IBInspectable public var helpingText: String = "" {
         didSet {
             createHelpingText()
             setHelpingText(helpingText)
         }
     }
     
-    @IBInspectable var helpingTextIcon: UIImage? {
+    @IBInspectable public var helpingTextIcon: UIImage? {
         didSet {
             createHelpingText()
             helpingTextIconImageView.image = helpingTextIcon
@@ -78,29 +78,29 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         }
     }
     
-    @IBInspectable var maximumLength = 100
-    @IBInspectable var icon: UIImage? {
+    @IBInspectable public var maximumLength = 100
+    @IBInspectable public var icon: UIImage? {
         didSet {
             createIconImageView()
             iconImageView.image = icon
         }
     }
     
-    @IBInspectable var actionIcon: UIImage? {
+    @IBInspectable public var actionIcon: UIImage? {
         didSet {
             createActionButton()
             actionButton.setImage(actionIcon, for: .normal)
         }
     }
     
-    @IBInspectable var actionIconSelected: UIImage? {
+    @IBInspectable public var actionIconSelected: UIImage? {
         didSet {
             createActionButton()
             actionButton.setImage(actionIconSelected, for: .selected)
         }
     }
     
-    var action: ((UITextField) -> Void)?
+    public var action: ((UITextField) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)

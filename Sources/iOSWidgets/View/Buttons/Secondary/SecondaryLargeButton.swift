@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 
 @IBDesignable
-final class SecondaryLargeButton: TTBBaseButton {
+public final class SecondaryLargeButton: TTBBaseButton {
     
-    override func draw(_ rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         buttonDesign = .secondary(.large)
         super.draw(rect)
     }

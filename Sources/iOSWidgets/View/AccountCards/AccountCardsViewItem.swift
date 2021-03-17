@@ -32,9 +32,6 @@ public class AccountCardsViewItem: UIView, LoadableNib {
         }
     }
     
-    static let reuseIdentifier = "AccountCardsViewItem"
-    static let nib = UINib(nibName: "AccountCardsViewItem", bundle: Bundle.main)
-    
     @IBOutlet weak var accountIconImageView: UIImageView!
     @IBOutlet weak var accountNameLabel: UILabel!
     @IBOutlet weak var accountNumberLabel: UILabel!
@@ -43,7 +40,7 @@ public class AccountCardsViewItem: UIView, LoadableNib {
     @IBOutlet weak var containerView: UIView!
     
     
-    var item: DisplayAccountItems?
+    var item: CardDisplayItems?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -59,7 +56,7 @@ public class AccountCardsViewItem: UIView, LoadableNib {
         setupLayout()
     }
     
-    init(_ item: DisplayAccountItems) {
+    init(_ item: CardDisplayItems) {
         super.init(frame: .zero)
         self.addSubview(loadView(bundle: .module))
         NSLayoutConstraint.activate([
@@ -93,7 +90,7 @@ public class AccountCardsViewItem: UIView, LoadableNib {
         self.showAnimatedSkeleton()
     }
     
-    func setItem(_ item: DisplayAccountItems?) {
+    func setItem(_ item: CardDisplayItems?) {
         guard let item = item else {
             return
         }
@@ -105,7 +102,7 @@ public class AccountCardsViewItem: UIView, LoadableNib {
     
 }
 
-public protocol DisplayAccountItems {
+public protocol CardDisplayItems {
     var accountIconURL: URL? { get set }
     var accountName: String? { get set }
     var accountNumber: String? { get set }
