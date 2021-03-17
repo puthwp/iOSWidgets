@@ -20,9 +20,11 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
     var actionButton = UIButton()
-    var inputState: PrimaryInputState = .idle
+    public var inputState: PrimaryInputState = .idle
     var tempPlaceHolder: String?
     var tempHelpingText: String?
+    var layerShape = CAShapeLayer()
+    var helpingTextStackView: UIStackView?
     
     public var error: PrimaryError? {
         didSet {
@@ -33,6 +35,13 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
                 inputState = isFirstResponder ? ((text?.isNotEmpty ?? true) ? .typing : .focus) : .typed
                 helpingText = tempHelpingText ?? ""
             }
+            updateLayout()
+        }
+    }
+    
+    public override var placeholder: String? {
+        didSet {
+            tempPlaceHolder = placeholder
             updateLayout()
         }
     }

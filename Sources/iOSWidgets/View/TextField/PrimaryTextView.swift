@@ -21,9 +21,11 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
     var actionButton = UIButton()
-    var inputState: PrimaryInputState = .idle
+    public var inputState: PrimaryInputState = .idle
     var tempPlaceHolder: String?
     var tempHelpingText: String?
+    var layerShape = CAShapeLayer()
+    var helpingTextStackView: UIStackView?
     
     private var initialHeight: CGFloat = 0
     
@@ -43,6 +45,13 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     @IBInspectable var title: String? {
         didSet {
             titleLabel.text = title
+        }
+    }
+    
+    @IBInspectable var placeHoler: String? {
+        didSet {
+            tempPlaceHolder = placeHoler
+            updateLayout()
         }
     }
     
@@ -82,7 +91,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         }
     }
     
-    var action: ((UITextField) -> Void)?
+    public var action: ((UITextField) -> Void)?
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -110,6 +119,10 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
         inputState = hasTextInput ? .typing : .focus
+        if inputState == .focus, text.isEmpty {
+            text = placeHoler
+            textColor = TextFieldStateDesign.Focus.contentTextColor
+        }
         guard notification.object as! NSObject == self else {
             return
         }

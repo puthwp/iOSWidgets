@@ -34,6 +34,8 @@ protocol PrimaryTextinput: UIView {
     var icon: UIImage? { get set }
     var actionIcon: UIImage? { get set }
     var actionIconSelected: UIImage? { get set }
+    var layerShape: CAShapeLayer { get  set }
+    var helpingTextStackView: UIStackView? { get set }
     
     func notifyTextFieldIsEditting(_ notification: Notification)
     func notifyTextFieldIsBeginEditting(_ notification: Notification)
@@ -207,16 +209,16 @@ extension PrimaryTextinput {
         helpingTextIconImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
         helpingTextIconImageView.image = helpingTextIcon != nil ? helpingTextIcon : UIImage(named: "01Small16PxAlert")
         
-        let stackView = UIStackView(arrangedSubviews: [helpingTextIconImageView, helpingTextLabel])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.axis = .horizontal
-        stackView.spacing = 4
+        helpingTextStackView = UIStackView(arrangedSubviews: [helpingTextIconImageView, helpingTextLabel])
+        helpingTextStackView?.translatesAutoresizingMaskIntoConstraints = false
+        helpingTextStackView?.alignment = .fill
+        helpingTextStackView?.distribution = .fill
+        helpingTextStackView?.axis = .horizontal
+        helpingTextStackView?.spacing = 4
     
-        self.addSubview(stackView)
+        self.addSubview(helpingTextStackView!)
         let metrics = ["top": heightConstraint.constant + TextOptionalDesign.topMargin, "height" : TextOptionalDesign.height]
-        let views = ["stack": stackView, "self": self]
+        let views = ["stack": helpingTextStackView!, "self": self]
         let constraintH = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stack]-0-|", options: .directionLeftToRight, metrics: metrics, views: views)
         let constraintV = NSLayoutConstraint.constraints(withVisualFormat: "V:|-top-[stack(>=height)]", options: .directionLeftToRight, metrics: metrics, views: views)
         self.addConstraints(constraintV)
@@ -245,7 +247,13 @@ extension PrimaryTextinput {
             return
         }
         actionButton.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(actionButton)
+        superview?.addSubview(actionButton)
+        let path = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
+        
+        layerShape = CAShapeLayer()
+        layerShape.path = path
+        layerShape.fillColor = UIColor.clear.cgColor
+        self.layer.insertSublayer(layerShape, at: 0)
         
         NSLayoutConstraint.activate([
             actionButton.widthAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.width),

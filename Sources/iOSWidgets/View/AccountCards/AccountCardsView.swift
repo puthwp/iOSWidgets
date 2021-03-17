@@ -135,6 +135,7 @@ public class AccountCardsView: UIView {
                                                   animation: nil,
                                                   transition: .crossDissolve(0.25))
             contenView.addArrangedSubview(view)
+            paging.numberOfPages = 1
             return
         }
         paging.numberOfPages = numberOfPagingDot
