@@ -159,6 +159,9 @@ extension PrimaryTextinput {
             return
         }
         if let textField = notification.object as? PrimaryTextinput {
+            guard textField.isEnabled else {
+                return 
+            }
             textField.error = nil
             textField.inputState = .typing
             textField.hasActionButton ? {

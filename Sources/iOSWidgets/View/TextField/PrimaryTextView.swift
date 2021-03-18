@@ -54,6 +54,12 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         }
     }
     
+    public override var text: String? {
+        didSet {
+            updateLayout()
+        }
+    }
+    
     @IBInspectable public var title: String? {
         didSet {
             titleLabel.text = title
@@ -63,7 +69,6 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     @IBInspectable var placeHoler: String? {
         didSet {
             tempPlaceHolder = placeHoler
-            updateLayout()
         }
     }
     
@@ -131,7 +136,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
         inputState = hasTextInput ? .typing : .focus
-        if inputState == .focus, text.isEmpty {
+        if inputState == .focus, text?.isEmpty ?? false {
             text = placeHoler
             textColor = TextFieldStateDesign.Focus.contentTextColor
         }
