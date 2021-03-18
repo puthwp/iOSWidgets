@@ -20,7 +20,7 @@ protocol PrimaryTextinput: UIView {
     var heightConstraint: NSLayoutConstraint { get set }
     var iconImageView: UIImageView { get set }
     var actionButton: UIButton { get set }
-    var tempPlaceHolder: String?  { get set }
+    var tempPlaceholder: String?  { get set }
     var tempHelpingText: String? { get set }
     var inputState: PrimaryInputState { get set }
     
@@ -52,12 +52,12 @@ extension PrimaryTextinput {
         return actionIcon != nil
     }
     
-    var textField: UITextField? {
-        return self as? UITextField
+    var textField: PrimaryTextField? {
+        return self as? PrimaryTextField
     }
     
-    var textView: UITextView? {
-        return self as? UITextView
+    var textView: PrimaryTextView? {
+        return self as? PrimaryTextView
     }
     
     var view: UIView? {
@@ -75,14 +75,11 @@ extension PrimaryTextinput {
     }
     
     var hasTextInput: Bool {
-        return (textInput ?? "").isNotEmpty
+        return (textInput ?? "").isNotEmpty && (textView?.placeholder != textView?.text)
     }
     
     var hasPlaceholder: Bool {
-        guard let textField = textField else {
-            return false
-        }
-        return textField.placeholder?.isNotEmpty ?? false
+        return textField?.placeholder?.isNotEmpty ?? false || textView?.placeholder?.isNotEmpty ?? false
     }
     
     var inputState: PrimaryInputState {
@@ -114,8 +111,8 @@ extension PrimaryTextinput {
         createIconImageView()
         createActionButton()
         setupLayout()
-        tempPlaceHolder = textField?.placeholder
-        setPlaceHolder(input: tempPlaceHolder)
+        tempPlaceholder = textField?.placeholder
+        setPlaceHolder(input: tempPlaceholder)
         inputState = hasTextInput ? .typed : .idle
     }
     
@@ -337,7 +334,7 @@ extension PrimaryTextinput {
             
             helpingTextLabel.textColor = TextOptionalDesign.Normal.color
             helpingTextIconImageView.isHidden = true
-            textField?.placeholder = tempPlaceHolder
+            textField?.placeholder = tempPlaceholder
         case .typing:
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Typing.titleFont
@@ -349,7 +346,7 @@ extension PrimaryTextinput {
             
             helpingTextLabel.textColor = TextOptionalDesign.Normal.color
             helpingTextIconImageView.isHidden = true
-            textField?.placeholder = tempPlaceHolder
+            textField?.placeholder = tempPlaceholder
         case .typed:
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Typed.titleFont
@@ -361,7 +358,7 @@ extension PrimaryTextinput {
             
             helpingTextLabel.textColor = TextOptionalDesign.Normal.color
             helpingTextIconImageView.isHidden = true
-            textField?.placeholder = tempPlaceHolder
+            textField?.placeholder = tempPlaceholder
         case .disabled:
             titleTopConstraint.isActive = hasTextInput || hasPlaceholder
             titleLabel.font = hasTextInput || hasPlaceholder ? TextFieldStateDesign.Disable.titleSmall : TextFieldStateDesign.Normal.titleFont
@@ -373,7 +370,7 @@ extension PrimaryTextinput {
             
             helpingTextLabel.textColor = TextOptionalDesign.Disable.color
             helpingTextIconImageView.isHidden = true
-            textField?.placeholder = tempPlaceHolder
+            textField?.placeholder = tempPlaceholder
         case .error:
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Error.titleFont
@@ -386,7 +383,7 @@ extension PrimaryTextinput {
             helpingTextLabel.textColor = TextOptionalDesign.Error.color
             helpingTextIconImageView.isHidden = false
             
-            textField?.placeholder = tempPlaceHolder
+            textField?.placeholder = tempPlaceholder
         }
         titleCenterConstraint.isActive = titleTopConstraint.isActive.revert
     }
@@ -416,7 +413,7 @@ extension PrimaryTextinput {
                     self?.setPlaceHolder(input: holder)
                 }
             default:
-                if let holder = self?.tempPlaceHolder, holder.isNotEmpty {
+                if let holder = self?.tempPlaceholder, holder.isNotEmpty {
                     self?.setPlaceHolder(input: holder)
                 }
             }

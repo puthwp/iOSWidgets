@@ -21,10 +21,13 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     var iconImageView = UIImageView()
     var actionButton = UIButton()
     public var inputState: PrimaryInputState = .idle
-    var tempPlaceHolder: String?
+    var tempPlaceholder: String?
     var tempHelpingText: String?
     var layerShape = CAShapeLayer()
     var helpingTextStackView: UIStackView?
+    private let placeHolderLabel = UILabel(frame: .zero)
+    private var placeholderLeading: NSLayoutConstraint?
+    private var placeholderTrailing: NSLayoutConstraint?
     
     private var initialHeight: CGFloat = 0
     
@@ -54,15 +57,22 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         }
     }
     
+    public override var text: String! {
+        didSet {
+            placeHolderLabel.isHidden = text.isNotEmpty
+        }
+    }
+    
     @IBInspectable public var title: String? {
         didSet {
             titleLabel.text = title
         }
     }
     
-    @IBInspectable var placeHoler: String? {
+    @IBInspectable var placeholder: String? {
         didSet {
-            tempPlaceHolder = placeHoler
+            tempPlaceholder = placeholder
+            createPlaceholder(placeholder)
             updateLayout()
         }
     }
@@ -86,6 +96,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         didSet {
             createIconImageView()
             iconImageView.image = icon
+            createPlaceholder(placeholder)
         }
     }
     
@@ -93,6 +104,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         didSet {
             createActionButton()
             actionButton.setImage(actionIcon, for: .normal)
+            createPlaceholder(placeholder)
         }
     }
     
@@ -100,6 +112,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         didSet {
             createActionButton()
             actionButton.setImage(actionIconSelected, for: .selected)
+            createPlaceholder(placeholder)
         }
     }
     
@@ -119,6 +132,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     private func setConfiguration(){
         self.isEditable = true
+        self.clipsToBounds = false
         self.isSelectable = true
         self.isScrollEnabled = false
         self.showsVerticalScrollIndicator = false
@@ -131,10 +145,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
         inputState = hasTextInput ? .typing : .focus
-        if inputState == .focus, text.isEmpty {
-            text = placeHoler
-            textColor = TextFieldStateDesign.Focus.contentTextColor
-        }
+        placeHolderLabel.isHidden = self.text.isNotEmpty
         guard notification.object as! NSObject == self else {
             return
         }
@@ -145,9 +156,15 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
+        placeHolderLabel.isHidden = text.isNotEmpty
         if error != nil {
             inputState = .error
         }
+//        if isFirstResponder {
+//            inputState = hasTextInput ? .focus : .typing
+//        }else {
+//            inputState = hasTextInput ? .idle : .typed
+//        }
         updateLayout()
         self.textContainerInset = inputInset
     }
@@ -155,6 +172,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
         inputState = hasTextInput ? .typing : .focus
+        placeHolderLabel.isHidden = text.isNotEmpty
         updateLayout()
         return true
     }
@@ -165,7 +183,29 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
             return true
         }
         inputState = hasTextInput ? .typed : .idle
+        placeHolderLabel.isHidden = text.isNotEmpty
         return true
     }
     
+    private func createPlaceholder(_ input: String?) {
+        placeHolderLabel.text = input
+        guard placeHolderLabel.superview == nil else {
+            placeholderLeading?.constant = inputInset.left
+            placeholderTrailing?.constant = inputInset.right
+            return
+        }
+        placeHolderLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(placeHolderLabel)
+        placeHolderLabel.textColor = TextFieldStateDesign.Normal.contentTextColor
+        placeHolderLabel.font = TextFieldStateDesign.Normal.contentFont
+        
+        
+        placeholderLeading = placeHolderLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: inputInset.left)
+        placeholderTrailing = placeHolderLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: inputInset.right)
+        NSLayoutConstraint.activate([
+            placeholderLeading!,
+            placeholderTrailing!,
+            placeHolderLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: inputInset.top)
+        ])
+    }
 }

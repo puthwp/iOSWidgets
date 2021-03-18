@@ -21,7 +21,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     var iconImageView = UIImageView()
     var actionButton = UIButton()
     public var inputState: PrimaryInputState = .idle
-    var tempPlaceHolder: String?
+    var tempPlaceholder: String?
     var tempHelpingText: String?
     var layerShape = CAShapeLayer()
     var helpingTextStackView: UIStackView?
@@ -41,8 +41,8 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     
     public override var placeholder: String? {
         didSet {
-            tempPlaceHolder = placeholder?.isNotEmpty ?? false ? placeholder : tempPlaceHolder
-            setPlaceHolder(input: tempPlaceHolder)
+            tempPlaceholder = placeholder?.isNotEmpty ?? false ? placeholder : tempPlaceholder
+            setPlaceHolder(input: tempPlaceholder)
         }
     }
     
