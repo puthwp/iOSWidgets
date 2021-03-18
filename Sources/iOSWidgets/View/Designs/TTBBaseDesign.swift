@@ -52,16 +52,30 @@ public extension TTBBaseBlueDesign {
     }
     
     func setupLayout() {
-        self.view.backgroundColor = UIColor(patternImage: Design.halfScreenHeaderBackground)
+        let backgroundColor = CAShapeLayer()
+        backgroundColor.path = UIBezierPath(rect: UIScreen.main.nativeBounds).cgPath
+        backgroundColor.fillColor = UIColor.primaryConfidentBlue.cgColor
+        
+        let graphicLayer = CAShapeLayer()
+        let graphicRect = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 200, y: 0),
+                                   size: CGSize(width: 200, height: 200))
+        graphicLayer.path = UIBezierPath(rect: graphicRect).cgPath
+        graphicLayer.fillColor = UIColor.red.cgColor
+        graphicLayer.contents = UIImage(named: "graphicArcCurve", in: .module, compatibleWith: .none)?.cgImage
+        graphicLayer.frame = graphicRect
+        graphicLayer.contentsGravity = .resizeAspectFill
+        backgroundColor.addSublayer(graphicLayer)
+        
         let rect = CGRect(x: 0,
-                          y: self.view.bounds.height / 2.0,
-                          width: self.view.bounds.width,
-                          height: self.view.bounds.height / 2.0)
-        let path = UIBezierPath(rect: rect).cgPath
+                          y: UIScreen.main.bounds.height * 0.3,
+                          width: UIScreen.main.bounds.width,
+                          height: UIScreen.main.bounds.height * 0.7)
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 24, height: 24)).cgPath
         let shape = CAShapeLayer()
         shape.path = path
         shape.fillColor = UIColor.primaryHonestWhite.cgColor
-        self.view.layer.insertSublayer(shape, at: 0)
+        backgroundColor.addSublayer(shape)
+        self.view.layer.insertSublayer(backgroundColor, at: 0)
     }
 }
 

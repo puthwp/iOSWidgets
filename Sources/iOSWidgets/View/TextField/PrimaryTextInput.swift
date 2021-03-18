@@ -326,7 +326,6 @@ extension PrimaryTextinput {
             
             helpingTextLabel.textColor = TextOptionalDesign.Normal.color
             helpingTextIconImageView.isHidden = true
-//            textField?.placeholder = ""
         case .focus:
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Focus.titleFont
@@ -414,7 +413,6 @@ extension PrimaryTextinput {
             switch self?.inputState {
             case .idle, .disabled:
                 if let holder = self?.textField?.placeholder, holder.isNotEmpty {
-//                    self?.tempPlaceHolder = holder
                     self?.setPlaceHolder(input: holder)
                 }
             default:
