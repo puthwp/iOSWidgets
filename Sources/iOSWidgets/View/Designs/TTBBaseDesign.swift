@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 private enum Design {
-    static let halfScreenHeaderBackground = UIImage(imageLiteralResourceName: "heading_background")
+    static let halfScreenHeaderBackground = UIImage(named: "heading_background", in: .module, compatibleWith: .none) ?? UIImage()
     static let halfScreenContentRadius: CGFloat = 24
     static let halfScreenContentFrame = CGRect(x: 0, y: 280, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height - 280)
 }

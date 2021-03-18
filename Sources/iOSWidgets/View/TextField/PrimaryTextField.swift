@@ -41,8 +41,8 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     
     public override var placeholder: String? {
         didSet {
-            tempPlaceHolder = placeholder
-            updateLayout()
+            tempPlaceHolder = placeholder?.isNotEmpty ?? false ? placeholder : tempPlaceHolder
+            setPlaceHolder(input: tempPlaceHolder)
         }
     }
     
