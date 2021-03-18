@@ -1,15 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "graphicArcCurve01.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "bitmap_copy.png",
+      "filename" : "graphicArcCurve01@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "graphicArcCurve01@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
