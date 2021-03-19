@@ -19,7 +19,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     var titleRightMargin = NSLayoutConstraint()
     var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
-    var actionButton = UIButton()
+    public var actionButton = UIButton()
     public var inputState: PrimaryInputState = .idle
     var tempPlaceholder: String?
     var tempHelpingText: String?
@@ -53,13 +53,15 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
             case false:
                 inputState = .disabled
             }
-            updateLayout()
+            layoutSubviews()
         }
     }
     
     public override var text: String! {
         didSet {
             placeHolderLabel.isHidden = text.isNotEmpty
+            inputState = hasTextInput ? .typed : .idle
+            layoutSubviews()
         }
     }
     
@@ -73,7 +75,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         didSet {
             tempPlaceholder = placeholder
             createPlaceholder(placeholder)
-            updateLayout()
+            layoutSubviews()
         }
     }
     
@@ -160,11 +162,8 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         if error != nil {
             inputState = .error
         }
-//        if isFirstResponder {
-//            inputState = hasTextInput ? .focus : .typing
-//        }else {
-//            inputState = hasTextInput ? .idle : .typed
-//        }
+        let textSize = self.sizeThatFits(self.bounds.size).height
+        heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
         updateLayout()
         self.textContainerInset = inputInset
     }
