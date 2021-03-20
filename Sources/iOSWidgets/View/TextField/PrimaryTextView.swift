@@ -47,6 +47,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     public var isEnabled: Bool = true {
         didSet {
             isEditable = isEnabled
+            isSelectable = isEnabled
             switch isEnabled {
             case true:
                 inputState = hasTextInput ? .typed : .idle
@@ -160,17 +161,18 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         if error != nil {
             inputState = .error
         }
-//        if isFirstResponder {
-//            inputState = hasTextInput ? .focus : .typing
-//        }else {
-//            inputState = hasTextInput ? .idle : .typed
-//        }
+        if isEnabled.revert {
+            inputState = .disabled
+        }
         updateLayout()
         self.textContainerInset = inputInset
     }
     
     public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
+        guard isEnabled else {
+            return false
+        }
         inputState = hasTextInput ? .typing : .focus
         placeHolderLabel.isHidden = text.isNotEmpty
         updateLayout()

@@ -43,7 +43,6 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         didSet {
             tempPlaceholder = placeholder?.isNotEmpty ?? false ? placeholder : tempPlaceholder
             setPlaceHolder(input: tempPlaceholder)
-            tempPlaceHolder = placeholder
         }
     }
     
