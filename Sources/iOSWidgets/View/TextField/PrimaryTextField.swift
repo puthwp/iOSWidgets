@@ -19,7 +19,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     var titleRightMargin = NSLayoutConstraint()
     public var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
-    var actionButton = UIButton()
+    public var actionButton = UIButton()
     public var inputState: PrimaryInputState = .idle
     var tempPlaceholder: String?
     var tempHelpingText: String?
@@ -32,7 +32,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
                 inputState = .error
                 helpingText = error.description ?? ""
             }else {
-                inputState = isFirstResponder ? ((text?.isNotEmpty ?? true) ? .typing : .focus) : .typed
+                inputState = isFirstResponder ? (hasTextInput ? .typing : .focus) : .typed
                 helpingText = tempHelpingText ?? ""
             }
             updateLayout()
@@ -48,7 +48,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     
     public override var text: String? {
         didSet {
-            updateLayout()
+            layoutSubviews()
         }
     }
     

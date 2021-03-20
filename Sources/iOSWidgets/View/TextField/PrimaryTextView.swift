@@ -2,7 +2,7 @@
 //  PrimaryTextView.swift
 //  ComponentTest
 //
-//  Created by ONEAPP-IT4IT on 1/3/2564 BE.
+//  Created by Sitthorn Ch on 1/3/2564 BE.
 //
 
 import Foundation
@@ -19,7 +19,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     var titleRightMargin = NSLayoutConstraint()
     var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
-    var actionButton = UIButton()
+    public var actionButton = UIButton()
     public var inputState: PrimaryInputState = .idle
     var tempPlaceholder: String?
     var tempHelpingText: String?
@@ -54,13 +54,15 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
             case false:
                 inputState = .disabled
             }
-            updateLayout()
+            layoutSubviews()
         }
     }
     
     public override var text: String! {
         didSet {
             placeHolderLabel.isHidden = text.isNotEmpty
+            inputState = hasTextInput ? .typed : .idle
+            layoutSubviews()
         }
     }
     
@@ -74,7 +76,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         didSet {
             tempPlaceholder = placeholder
             createPlaceholder(placeholder)
-            updateLayout()
+            layoutSubviews()
         }
     }
     
@@ -164,6 +166,8 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         if isEnabled.revert {
             inputState = .disabled
         }
+        let textSize = self.sizeThatFits(self.bounds.size).height
+        heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
         updateLayout()
         self.textContainerInset = inputInset
     }

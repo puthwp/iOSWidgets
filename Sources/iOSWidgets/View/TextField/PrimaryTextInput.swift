@@ -157,7 +157,7 @@ extension PrimaryTextinput {
             return
         }
         if let textField = notification.object as? PrimaryTextinput {
-            guard textField.isEnabled else {
+            guard self.isEnabled else {
                 return 
             }
             textField.error = nil
@@ -409,17 +409,8 @@ extension PrimaryTextinput {
         UIView.animate(withDuration: 0.2, delay: 0,
                        options: [.allowUserInteraction, .beginFromCurrentState]) {
             self.layoutIfNeeded()
-        } completion: { [weak self] (finished) in
-//            switch self?.inputState {
-//            case .idle, .disabled:
-//                if let holder = self?.textField?.placeholder, holder.isNotEmpty {
-//                    self?.setPlaceHolder(input: holder)
-//                }
-//            default:
-//                if let holder = self?.tempPlaceholder, holder.isNotEmpty {
-//                    self?.setPlaceHolder(input: holder)
-//                }
-//            }
+        } completion: { _ in
+
         }
     }
     
