@@ -2,7 +2,7 @@
 //  Font+Extension.swift
 //  ComponentTest
 //
-//  Created by ONEAPP-IT4IT on 17/2/2564 BE.
+//  Created by Sitthorn Ch on 17/2/2564 BE.
 //
 
 import Foundation
