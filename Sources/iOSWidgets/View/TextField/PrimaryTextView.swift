@@ -2,7 +2,7 @@
 //  PrimaryTextView.swift
 //  ComponentTest
 //
-//  Created by ONEAPP-IT4IT on 1/3/2564 BE.
+//  Created by Sitthorn Ch on 1/3/2564 BE.
 //
 
 import Foundation
@@ -47,6 +47,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     public var isEnabled: Bool = true {
         didSet {
             isEditable = isEnabled
+            isSelectable = isEnabled
             switch isEnabled {
             case true:
                 inputState = hasTextInput ? .typed : .idle
@@ -162,6 +163,9 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         if error != nil {
             inputState = .error
         }
+        if isEnabled.revert {
+            inputState = .disabled
+        }
         let textSize = self.sizeThatFits(self.bounds.size).height
         heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
         updateLayout()
@@ -170,6 +174,9 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
+        guard isEnabled else {
+            return false
+        }
         inputState = hasTextInput ? .typing : .focus
         placeHolderLabel.isHidden = text.isNotEmpty
         updateLayout()

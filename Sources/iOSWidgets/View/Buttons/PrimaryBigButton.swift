@@ -53,16 +53,10 @@ public final class PrimaryBigButton: UIButton {
         return Design.buttonSize
     }
     
-    private func setupLayout() {
-        setupTitle()
-        setupIconFrame()
-        clipsToBounds = false
-    }
-    
-    private func setupTitle() {
-        let titleAttribute = NSMutableAttributedString(string: title(for: .normal) ?? "")
-        let titleStr = title(for: .normal) ?? ""
-        let range = NSRange(location: 0, length: titleStr.utf16.count)
+    public override func setTitle(_ title: String?, for state: UIControl.State) {
+        super.setTitle(title, for: state)
+        let titleAttribute = NSMutableAttributedString(string: title ?? "")
+        let range = NSRange(location: 0, length: title?.utf16.count ?? 0)
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 0
         style.alignment = .center
@@ -70,10 +64,20 @@ public final class PrimaryBigButton: UIButton {
         titleAttribute.addAttribute(.foregroundColor, value: UIColor.primaryTrustedNavy, range: range)
         titleAttribute.addAttribute(.paragraphStyle, value: style, range: range)
         setAttributedTitle(titleAttribute, for: .normal)
-        
+    }
+    
+    private func setupLayout() {
+        setupTitle()
+        setupIconFrame()
+        clipsToBounds = false
+    }
+    
+    private func setupTitle() {
         titleLabel?.clipsToBounds = false
         titleLabel?.numberOfLines = 2
     }
+    
+    
     
     private func setupIconFrame() {
         let iconBackground = UIView(frame: CGRect(x: 0, y: 0, width: Design.iconSize.width, height: Design.iconSize.height))

@@ -56,20 +56,19 @@ public extension TTBBaseBlueDesign {
         backgroundColor.path = UIBezierPath(rect: UIScreen.main.nativeBounds).cgPath
         backgroundColor.fillColor = UIColor.primaryConfidentBlue.cgColor
         
+        let graphicImage = UIImage(named: "graphicArcCurve", in: .module, compatibleWith: .none)
         let graphicLayer = CAShapeLayer()
-        let graphicRect = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 200, y: 0),
-                                   size: CGSize(width: 200, height: 200))
-        graphicLayer.path = UIBezierPath(rect: graphicRect).cgPath
-        graphicLayer.fillColor = UIColor.red.cgColor
-        graphicLayer.contents = UIImage(named: "graphicArcCurve", in: .module, compatibleWith: .none)?.cgImage
+        let graphicRect = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - (graphicImage?.size.width ?? 0), y: 0),
+                                 size: graphicImage?.size ?? .zero)
+        graphicLayer.contents = graphicImage?.cgImage
         graphicLayer.frame = graphicRect
         graphicLayer.contentsGravity = .resizeAspectFill
         backgroundColor.addSublayer(graphicLayer)
         
         let rect = CGRect(x: 0,
-                          y: UIScreen.main.bounds.height * 0.3,
+                          y: UIScreen.main.bounds.height * 0.6,
                           width: UIScreen.main.bounds.width,
-                          height: UIScreen.main.bounds.height * 0.7)
+                          height: UIScreen.main.bounds.height * 0.4)
         let path = UIBezierPath(roundedRect: rect, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 24, height: 24)).cgPath
         let shape = CAShapeLayer()
         shape.path = path

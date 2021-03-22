@@ -75,7 +75,7 @@ extension PrimaryTextinput {
     }
     
     var hasTextInput: Bool {
-        return (textInput ?? "").isNotEmpty && (textView?.placeholder != textView?.text)
+        return (textInput ?? "").isNotEmpty 
     }
     
     var hasPlaceholder: Bool {
@@ -208,7 +208,7 @@ extension PrimaryTextinput {
         
         helpingTextIconImageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
         helpingTextIconImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
-        helpingTextIconImageView.image = helpingTextIcon != nil ? helpingTextIcon : UIImage(named: "01Small16PxAlert")
+        helpingTextIconImageView.image = helpingTextIcon != nil ? helpingTextIcon : UIImage(named: "01Small16PxAlert", in: .module, compatibleWith: .none)
         
         helpingTextStackView = UIStackView(arrangedSubviews: [helpingTextIconImageView, helpingTextLabel])
         helpingTextStackView?.translatesAutoresizingMaskIntoConstraints = false
@@ -284,7 +284,7 @@ extension PrimaryTextinput {
         let attributePlaceholder =  NSAttributedString(string: input ?? "",
                                                        attributes: [
                                                         NSAttributedString.Key.foregroundColor: TextFieldStateDesign.Normal.contentTextColor,
-                                                        NSAttributedString.Key.font: TextFieldStateDesign.Normal.contentFont!
+                                                        NSAttributedString.Key.font: self.textField?.font!
                                                        ])
         textField?.attributedPlaceholder = attributePlaceholder
     }
@@ -409,17 +409,8 @@ extension PrimaryTextinput {
         UIView.animate(withDuration: 0.2, delay: 0,
                        options: [.allowUserInteraction, .beginFromCurrentState]) {
             self.layoutIfNeeded()
-        } completion: { [weak self] (finished) in
-            switch self?.inputState {
-            case .idle, .disabled:
-                if let holder = self?.textField?.placeholder, holder.isNotEmpty {
-                    self?.setPlaceHolder(input: holder)
-                }
-            default:
-                if let holder = self?.tempPlaceholder, holder.isNotEmpty {
-                    self?.setPlaceHolder(input: holder)
-                }
-            }
+        } completion: { _ in
+
         }
     }
     
