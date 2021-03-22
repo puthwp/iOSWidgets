@@ -20,7 +20,7 @@ public protocol PrimaryPillCategorySourceProtocol: class {
 public class PrimaryPillCategory: UIView {
     
     private enum Design {
-        static let height: CGFloat = 32
+        static let height: CGFloat = 120
         static let width: CGFloat = UIScreen.main.bounds.width
         static let spacing: CGFloat = 8
     }
@@ -91,21 +91,14 @@ public class PrimaryPillCategory: UIView {
             wrapper.trailingAnchor.constraint(equalTo: scrollview.trailingAnchor, constant: 0),
             wrapper.topAnchor.constraint(equalTo: scrollview.topAnchor, constant: 0),
             wrapper.bottomAnchor.constraint(equalTo: scrollview.bottomAnchor, constant: 0),
-            wrapper.heightAnchor.constraint(equalToConstant: Design.height)
         ])
         
         self.addSubview(scrollview)
-        
-        let itemSize = source?.sizeForItem(source: self, at: 0) ?? CGSize(width: Design.width, height: Design.height)
-        let height = self.intrinsicContentSize.height > itemSize.height ? self.intrinsicContentSize.height : itemSize.height
-//        let width = self.intrinsicContentSize.width
         NSLayoutConstraint.activate([
             scrollview.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
             scrollview.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
             scrollview.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
             scrollview.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-//            scrollview.heightAnchor.constraint(equalToConstant: height),
-//            self.heightAnchor.constraint(equalToConstant: height)
         ])
         
         layoutIfNeeded()
@@ -115,19 +108,12 @@ public class PrimaryPillCategory: UIView {
     public override var intrinsicContentSize: CGSize {
         var size = super.intrinsicContentSize
         let heightConstraint = self.constraints.filter { $0.firstAttribute == .height }.first
-//        let widthConstraint = self.constraints.filter { $0.firstAttribute == .width}.first
         let itemSize = source?.sizeForItem(source: self, at: 0) ?? CGSize(width: Design.width, height: Design.height)
         if let height = heightConstraint, height.constant > Design.height {
             size.height = height.constant
         }else {
             size.height = itemSize.height
         }
-//        if let width = widthConstraint, width.constant > 0 {
-//            size.width = width.constant
-//        }else {
-//            size.width = itemSize.width
-//        }
-////        print("xxx\(self)Contensize : \(size)")
         return size
     }
     
@@ -140,9 +126,9 @@ public class PrimaryPillCategory: UIView {
     
     private func createPills(items: [String]?) {
         guard let items = items else {
-            let button = PrimaryPillItems(title: "xxxitemxxx")
-            wrapper.addArrangedSubview(button)
-            button.showAnimatedSkeleton()
+//            let button = PrimaryPillItems(title: "xxxitemxxx")
+//            wrapper.addArrangedSubview(button)
+//            button.showAnimatedSkeleton()
             return
         }
         clearPills()
@@ -207,12 +193,9 @@ class PrimaryPillItems: UIButton {
     }
     
     public var buttonFont: UIFont? = Design.font
-    var size: CGSize = CGSize(width: 200, height: Design.height) {
-        didSet {
-            setItemSize(inputSize: size)
-        }
-    }
+    var size: CGSize = CGSize(width: Design.padding * 2, height: Design.height)
     var dynamicWidth: CGFloat {
+        self.titleLabel?.sizeToFit()
         return (self.titleLabel?.bounds.width ?? 0) + (Design.padding * 2)
     }
     
@@ -232,7 +215,6 @@ class PrimaryPillItems: UIButton {
         self.buttonFont = font
         if size != .zero {
             self.size = size
-            print("xxxSetSize:\(size)")
         }
         setupLayout()
     }
@@ -242,12 +224,16 @@ class PrimaryPillItems: UIButton {
         self.layer.borderWidth = 1
         self.layer.borderColor = (isSelected ? Design.Selected.borderColor : Design.Normal.borderColor).cgColor
         self.titleLabel?.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
-        self.setItemSize(inputSize: self.size)
+        self.size.width =  self.size.width < dynamicWidth ? dynamicWidth : self.size.width
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return self.size
     }
     
     private func setupLayout() {
         self.clipsToBounds = true
-        self.layer.cornerRadius = Design.height / 2
+        self.layer.cornerRadius = self.size.height / 2
         self.translatesAutoresizingMaskIntoConstraints = false
         
         self.setBackgroundImage(UIImage(color: Design.Normal.backgroundColor), for: .normal)
@@ -267,13 +253,5 @@ class PrimaryPillItems: UIButton {
         let width = dynamicWidth > self.size.width ? dynamicWidth : self.size.width
         let height = self.size.height
         self.size = CGSize(width: width, height: height)
-        setItemSize(inputSize: CGSize(width: width, height: height))
-    }
-    
-    public func setItemSize(inputSize: CGSize?) {
-        NSLayoutConstraint.activate([
-            self.heightAnchor.constraint(equalToConstant: self.size.height),
-            self.widthAnchor.constraint(equalToConstant: self.size.width)
-        ])
     }
 }
