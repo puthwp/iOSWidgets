@@ -8,11 +8,12 @@
 import Foundation
 import UIKit
 
-@objc public protocol PillCategorySourceProtocol: class {
-    func createPill() -> [String]?
-    @objc optional func sizeForItem(at index: Int) -> CGSize
-    func didSelected(item: String, index: Int)
-    func didDeselected(item: String, index: Int)
+public protocol PrimaryPillCategorySourceProtocol: class {
+    typealias Pills = UIView
+    func createPill(source: Pills) -> [String]?
+    func sizeForItem(source: Pills, at index: Int) -> CGSize?
+    func didSelected(source: Pills, item: String, index: Int)
+    func didDeselected(source: Pills, item: String, index: Int)
 }
 
 @IBDesignable
@@ -20,6 +21,7 @@ public class PrimaryPillCategory: UIView {
     
     private enum Design {
         static let height: CGFloat = 32
+        static let width: CGFloat = UIScreen.main.bounds.width
         static let spacing: CGFloat = 8
     }
     
@@ -34,7 +36,14 @@ public class PrimaryPillCategory: UIView {
         }
     }
     
-    public weak var inoutSource: PillCategorySourceProtocol?
+    public weak var source: PrimaryPillCategorySourceProtocol?
+    @IBInspectable public var spacing: CGFloat = Design.spacing {
+        didSet {
+            wrapper.spacing = spacing
+        }
+    }
+    @IBInspectable public var font: UIFont? = UIFont.subtitleGreyLeft
+    @IBInspectable public var deselectable: Bool = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -67,11 +76,11 @@ public class PrimaryPillCategory: UIView {
         wrapper.axis = .horizontal
         wrapper.alignment = .fill
         wrapper.distribution = .fill
-        wrapper.spacing = Design.spacing
+        wrapper.spacing = spacing
 
         
         var categoryArray: [String] = categories?.split(separator: ",").compactMap { String($0) } ?? []
-        if let input = inoutSource?.createPill(), input.count > 0 {
+        if let input = source?.createPill(source: self), input.count > 0 {
             categoryArray = input
         }
         createPills(items: categoryArray)
@@ -86,17 +95,40 @@ public class PrimaryPillCategory: UIView {
         ])
         
         self.addSubview(scrollview)
+        
+        let itemSize = source?.sizeForItem(source: self, at: 0) ?? CGSize(width: Design.width, height: Design.height)
+        let height = self.intrinsicContentSize.height > itemSize.height ? self.intrinsicContentSize.height : itemSize.height
+//        let width = self.intrinsicContentSize.width
         NSLayoutConstraint.activate([
             scrollview.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
             scrollview.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
             scrollview.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
             scrollview.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-            scrollview.heightAnchor.constraint(equalToConstant: Design.height),
-            self.heightAnchor.constraint(equalToConstant: Design.height)
+//            scrollview.heightAnchor.constraint(equalToConstant: height),
+//            self.heightAnchor.constraint(equalToConstant: height)
         ])
         
         layoutIfNeeded()
         
+    }
+    
+    public override var intrinsicContentSize: CGSize {
+        var size = super.intrinsicContentSize
+        let heightConstraint = self.constraints.filter { $0.firstAttribute == .height }.first
+//        let widthConstraint = self.constraints.filter { $0.firstAttribute == .width}.first
+        let itemSize = source?.sizeForItem(source: self, at: 0) ?? CGSize(width: Design.width, height: Design.height)
+        if let height = heightConstraint, height.constant > Design.height {
+            size.height = height.constant
+        }else {
+            size.height = itemSize.height
+        }
+//        if let width = widthConstraint, width.constant > 0 {
+//            size.width = width.constant
+//        }else {
+//            size.width = itemSize.width
+//        }
+////        print("xxx\(self)Contensize : \(size)")
+        return size
     }
     
     private func clearPills() {
@@ -115,9 +147,8 @@ public class PrimaryPillCategory: UIView {
         }
         clearPills()
         for (index,item) in items.enumerated() {
-            let button = PrimaryPillItems(title: item)
-            let size = inoutSource?.sizeForItem?(at: index)
-            button.setItemSize(size: size)
+            let size = source?.sizeForItem(source: self, at: index) ?? .zero
+            let button = PrimaryPillItems(title: item,font: self.font, size: size)
             if #available(iOS 14.0, *) {
                 button.addAction(UIAction(handler: { [weak self] action in
                     let button = action.sender as? UIButton
@@ -135,9 +166,9 @@ public class PrimaryPillCategory: UIView {
     
     @objc func didSelected(button: UIButton) {
         let index = button.tag
-        if button.isSelected {
+        if button.isSelected && self.deselectable{
             button.isSelected = false
-            inoutSource?.didDeselected(item: allItems?[index] ?? "", index: index)
+            source?.didDeselected(source: self, item: allItems?[index] ?? "", index: index)
             return
         }
         
@@ -147,17 +178,16 @@ public class PrimaryPillCategory: UIView {
         
         button.isSelected = true
         
-        inoutSource?.didSelected(item: allItems?[index] ?? "", index: index)
+        source?.didSelected(source: self, item: allItems?[index] ?? "", index: index)
     }
     
     public func reloadItems() {
         clearPills()
-        createPills(items: inoutSource?.createPill())
+        createPills(items: source?.createPill(source: self))
     }
 }
 
 class PrimaryPillItems: UIButton {
-    
     private enum Design {
         static let height: CGFloat = 32
         static let font = UIFont.subtitleGreyLeft
@@ -176,6 +206,16 @@ class PrimaryPillItems: UIButton {
         }
     }
     
+    public var buttonFont: UIFont? = Design.font
+    var size: CGSize = CGSize(width: 200, height: Design.height) {
+        didSet {
+            setItemSize(inputSize: size)
+        }
+    }
+    var dynamicWidth: CGFloat {
+        return (self.titleLabel?.bounds.width ?? 0) + (Design.padding * 2)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
@@ -186,17 +226,15 @@ class PrimaryPillItems: UIButton {
         setupLayout()
     }
     
-    init(title: String) {
+    init(title: String, font: UIFont?, size: CGSize) {
         super.init(frame: .zero)
         self.setTitle(title, for: .normal)
+        self.buttonFont = font
+        if size != .zero {
+            self.size = size
+            print("xxxSetSize:\(size)")
+        }
         setupLayout()
-    }
-    
-    init(title: String, size: CGSize) {
-        super.init(frame: .zero)
-        self.setTitle(title, for: .normal)
-        setupLayout()
-        setItemSize(size: size)
     }
     
     override func layoutSubviews() {
@@ -204,7 +242,7 @@ class PrimaryPillItems: UIButton {
         self.layer.borderWidth = 1
         self.layer.borderColor = (isSelected ? Design.Selected.borderColor : Design.Normal.borderColor).cgColor
         self.titleLabel?.center = CGPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
-        self.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        self.setItemSize(inputSize: self.size)
     }
     
     private func setupLayout() {
@@ -220,20 +258,22 @@ class PrimaryPillItems: UIButton {
         self.setTitleColor(Design.Selected.textColor, for: .selected)
         
         
-        self.titleLabel?.font = Design.font
+        self.titleLabel?.font = self.buttonFont
         self.titleLabel?.sizeToFit()
     }
     
-    public func setItemSize(size: CGSize?) {
-        var width = (self.titleLabel?.bounds.width ?? 0) + (Design.padding * 2)
-        var height = Design.height
-        if let size = size {
-            width = size.width
-            height = size.height
-        }
+    override func setTitle(_ title: String?, for state: UIControl.State) {
+        super.setTitle(title, for: state)
+        let width = dynamicWidth > self.size.width ? dynamicWidth : self.size.width
+        let height = self.size.height
+        self.size = CGSize(width: width, height: height)
+        setItemSize(inputSize: CGSize(width: width, height: height))
+    }
+    
+    public func setItemSize(inputSize: CGSize?) {
         NSLayoutConstraint.activate([
-            self.heightAnchor.constraint(equalToConstant: width),
-            self.widthAnchor.constraint(equalToConstant: height)
+            self.heightAnchor.constraint(equalToConstant: self.size.height),
+            self.widthAnchor.constraint(equalToConstant: self.size.width)
         ])
     }
 }
