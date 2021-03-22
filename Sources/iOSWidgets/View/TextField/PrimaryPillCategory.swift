@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 
-public protocol PillCategorySourceProtocol: class {
+@objc public protocol PillCategorySourceProtocol: class {
     func createPill() -> [String]?
+    @objc optional func sizeForItem(at index: Int) -> CGSize
     func didSelected(item: String, index: Int)
     func didDeselected(item: String, index: Int)
 }
@@ -115,6 +116,8 @@ public class PrimaryPillCategory: UIView {
         clearPills()
         for (index,item) in items.enumerated() {
             let button = PrimaryPillItems(title: item)
+            let size = inoutSource?.sizeForItem?(at: index)
+            button.setItemSize(size: size)
             if #available(iOS 14.0, *) {
                 button.addAction(UIAction(handler: { [weak self] action in
                     let button = action.sender as? UIButton
@@ -189,6 +192,13 @@ class PrimaryPillItems: UIButton {
         setupLayout()
     }
     
+    init(title: String, size: CGSize) {
+        super.init(frame: .zero)
+        self.setTitle(title, for: .normal)
+        setupLayout()
+        setItemSize(size: size)
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         self.layer.borderWidth = 1
@@ -212,11 +222,18 @@ class PrimaryPillItems: UIButton {
         
         self.titleLabel?.font = Design.font
         self.titleLabel?.sizeToFit()
-        
-        let width = (self.titleLabel?.bounds.width ?? 0) + (Design.padding * 2)
+    }
+    
+    public func setItemSize(size: CGSize?) {
+        var width = (self.titleLabel?.bounds.width ?? 0) + (Design.padding * 2)
+        var height = Design.height
+        if let size = size {
+            width = size.width
+            height = size.height
+        }
         NSLayoutConstraint.activate([
-            self.heightAnchor.constraint(equalToConstant: Design.height),
-            self.widthAnchor.constraint(equalToConstant: width)
+            self.heightAnchor.constraint(equalToConstant: width),
+            self.widthAnchor.constraint(equalToConstant: height)
         ])
     }
 }
