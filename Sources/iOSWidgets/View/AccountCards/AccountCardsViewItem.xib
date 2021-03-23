@@ -30,7 +30,7 @@
                         <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="Jr3-pH-QBb">
                             <rect key="frame" x="12" y="56" width="40" height="86"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="03_large_36_px_product_all_free" translatesAutoresizingMaskIntoConstraints="NO" id="Rm1-rh-LbW">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="graphicArcCurve" translatesAutoresizingMaskIntoConstraints="NO" id="Rm1-rh-LbW">
                                     <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="Rm1-rh-LbW" secondAttribute="height" multiplier="1:1" id="2qq-7a-ZRg"/>
@@ -42,31 +42,36 @@
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="nSL-Fv-UoH">
                             <rect key="frame" x="76" y="56" width="326" height="86"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="dVP-0m-sCf">
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dVP-0m-sCf">
                                     <rect key="frame" x="0.0" y="0.0" width="326" height="86"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Account Name" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J2f-bi-RhY">
-                                            <rect key="frame" x="0.0" y="0.0" width="326" height="41"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="41" id="QfL-Ix-vt8"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account Number" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NfL-3f-JWU">
-                                            <rect key="frame" x="0.0" y="43" width="326" height="20.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="20.5" id="awT-sV-wMU"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="n7j-xL-EGn">
+                                            <rect key="frame" x="0.0" y="0.0" width="326" height="52"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Account Name" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J2f-bi-RhY">
+                                                    <rect key="frame" x="0.0" y="0.0" width="326" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="23" id="QfL-Ix-vt8"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account Number" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NfL-3f-JWU">
+                                                    <rect key="frame" x="0.0" y="32" width="326" height="20"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="20" id="awT-sV-wMU"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Amount" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QRr-Fr-T5Q">
-                                            <rect key="frame" x="0.0" y="65.5" width="326" height="20.5"/>
+                                            <rect key="frame" x="0.0" y="60" width="326" height="26"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="20.5" id="fil-Ni-36w"/>
+                                                <constraint firstAttribute="height" constant="26" id="fil-Ni-36w"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
@@ -95,7 +100,7 @@
         </view>
     </objects>
     <resources>
-        <image name="03_large_36_px_product_all_free" width="60" height="60"/>
+        <image name="graphicArcCurve" width="203" height="203"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

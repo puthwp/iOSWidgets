@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SkeletonView
 
-public protocol TTBAccountCardViewsProtocol: class {
+public protocol PrimaryAccountCardViewsProtocol: class {
     typealias T = CardDisplayItems
     typealias V = UIViewController
     func createCardViews(_ controller: V?) -> [T]?
@@ -36,7 +36,7 @@ public class AccountCardsView: UIView {
     }
     
     private let scrollView = UIScrollView(frame: .zero)
-    private let contenView = UIStackView(frame: .zero)
+    private let contentView = UIStackView(frame: .zero)
     private let titleLabel: UILabel = UILabel()
     private let paging: UIPageControl = UIPageControl()
     private let maxPagingNumber = 6
@@ -61,7 +61,7 @@ public class AccountCardsView: UIView {
         }
     }
     
-    public var datasource: TTBAccountCardViewsProtocol? {
+    public var datasource: PrimaryAccountCardViewsProtocol? {
         didSet {
             allItems = datasource?.createCardViews(nil)
             paging.numberOfPages = numberOfPagingDot
@@ -85,10 +85,11 @@ public class AccountCardsView: UIView {
     
     func setupLayout() {
         self.clipsToBounds = true
-        contenView.translatesAutoresizingMaskIntoConstraints = false
-        contenView.axis = .horizontal
-        contenView.distribution = .fill
-        contenView.spacing = 0
+        self.backgroundColor = .clear
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.axis = .horizontal
+        contentView.distribution = .fill
+        contentView.spacing = 0
         
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -137,7 +138,7 @@ public class AccountCardsView: UIView {
             view.amountLabel.showAnimatedSkeleton(usingColor: SkeletonAppearance.default.tintColor,
                                                   animation: nil,
                                                   transition: .crossDissolve(0.25))
-            contenView.addArrangedSubview(view)
+            contentView.addArrangedSubview(view)
             paging.numberOfPages = 1
             return
         }
@@ -148,13 +149,13 @@ public class AccountCardsView: UIView {
                 view.heightAnchor.constraint(equalToConstant: Constants.cardSize.height),
                 view.widthAnchor.constraint(equalToConstant: Constants.cardSize.width)
             ])
-            contenView.addArrangedSubview(view)
+            contentView.addArrangedSubview(view)
         }
         onComplete?()
     }
     
     public func clearCardsView() {
-        contenView.arrangedSubviews.forEach {
+        contentView.arrangedSubviews.forEach {
             $0.removeFromSuperview()
         }
     }
@@ -206,21 +207,27 @@ public class AccountCardsView: UIView {
     }
     
     private func setupCardViews() {
-        scrollView.addSubview(contenView)
+        scrollView.addSubview(contentView)
         NSLayoutConstraint.activate([
-            contenView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
-            contenView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0),
-            contenView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0),
-            contenView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0)
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0)
         ])
     }
 }
 
 
 extension AccountCardsView: UIScrollViewDelegate {
+    
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let index = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
-        paging.currentPage = index % Constants.maximumPagingDot
+        let itemsCount = allItems?.count ?? 0
+        if itemsCount > Constants.maximumPagingDot {
+            paging.currentPage = index / (itemsCount / Constants.maximumPagingDot)
+        }else {
+            paging.currentPage = index
+        }
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
