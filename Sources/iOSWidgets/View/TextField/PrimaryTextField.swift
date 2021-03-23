@@ -168,6 +168,8 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         ///
     }
     
-    
+    @objc func keyboardDoneAction() {
+        self.resignFirstResponder()
+    }
     
 }

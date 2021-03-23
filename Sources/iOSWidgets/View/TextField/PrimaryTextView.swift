@@ -220,4 +220,8 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
             placeHolderLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: inputInset.top)
         ])
     }
+    
+    @objc func keyboardDoneAction() {
+        self.resignFirstResponder()
+    }
 }

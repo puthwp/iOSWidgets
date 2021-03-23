@@ -126,9 +126,16 @@ public class PrimaryPillCategory: UIView {
     
     private func createPills(items: [String]?) {
         guard let items = items else {
-//            let button = PrimaryPillItems(title: "xxxitemxxx")
-//            wrapper.addArrangedSubview(button)
-//            button.showAnimatedSkeleton()
+            for _ in 0..<5 {
+                let button = PrimaryPillItems(title: "x",
+                                              font: self.font,
+                                              size: .zero)
+                button.layer.borderWidth = 1
+                button.layer.borderColor = UIColor.secondaryGrey20.cgColor
+                wrapper.addArrangedSubview(button)
+                button.isSkeletonable = true
+                button.showAnimatedGradientSkeleton()
+            }
             return
         }
         clearPills()

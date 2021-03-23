@@ -105,3 +105,9 @@ enum TextFieldStateDesign {
         static let displayIcon = true
     }
 }
+
+enum AccessoryView {
+    static let wrapperSize = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+    static let doneButtonSize = CGRect(x: 0, y: 0, width: 100, height: 28)
+    static let wrapperInset =  UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
+}
