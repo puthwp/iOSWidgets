@@ -108,6 +108,12 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     
     public var action: ((UITextField) -> Void)?
     
+    @IBInspectable public var enableInputAccessory: Bool = true {
+        didSet{
+            self.inputAccessoryView = enableInputAccessory ? createInputAccessories() : nil
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -161,5 +167,7 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     func notifyTextFieldIsEditting(_ notification: Notification) {
         ///
     }
+    
+    
     
 }

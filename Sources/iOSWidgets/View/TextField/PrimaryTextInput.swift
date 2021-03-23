@@ -414,6 +414,43 @@ extension PrimaryTextinput {
         }
     }
     
+    func createInputAccessories() -> UIView {
+        enum Design {
+            static let wrapperSize = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+            static let doneButtonSize = CGRect(x: 0, y: 0, width: 100, height: 28)
+            static let wrapperInset =  UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16)
+        }
+        
+        let wrapper = UIView(frame: Design.wrapperSize)
+        wrapper.backgroundColor = .white
+        
+        let doneButton = SecondarySmallButton(frame: Design.doneButtonSize)
+        doneButton.setTitle("DONE", for: .normal)
+        if #available(iOS 14.0, *) {
+            let doneAction = UIAction { action in
+                ///
+                self.keyboardDoneAction()
+            }
+            doneButton.addAction(doneAction, for: .touchUpInside)
+        } else {
+            // Fallback on earlier versions
+            doneButton.addTarget(self, action: #selector(keyboardDoneAction), for: .touchUpInside)
+        }
+        let stackWrapper = UIStackView(arrangedSubviews: [
+                                        doneButton
+        ])
+        stackWrapper.frame = wrapper.bounds
+        stackWrapper.isLayoutMarginsRelativeArrangement = true
+        stackWrapper.layoutMargins = Design.wrapperInset
+        
+        wrapper.addSubview(stackWrapper)
+        return wrapper
+    }
+    
+    @objc func keyboardDoneAction() {
+        self.resignFirstResponder()
+    }
+    
 }
 
 extension Bool {

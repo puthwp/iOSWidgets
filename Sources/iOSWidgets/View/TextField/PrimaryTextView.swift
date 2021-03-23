@@ -121,6 +121,12 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     public var action: ((UITextField) -> Void)?
     
+    @IBInspectable public var enableInputAccessory: Bool = true {
+        didSet{
+            self.inputAccessoryView = enableInputAccessory ? createInputAccessories() : nil
+        }
+    }
+    
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         commonInit()
