@@ -418,7 +418,7 @@ extension PrimaryTextinput {
         let wrapper = UIView(frame: AccessoryView.wrapperSize)
         wrapper.backgroundColor = .white
         
-        let doneButton = SecondarySmallButton(frame: AccessoryView.doneButtonSize)
+        let doneButton = PrimarySmallButton(frame: AccessoryView.doneButtonSize)
         doneButton.setTitle("DONE", for: .normal)
         if #available(iOS 14.0, *) {
             let doneAction = UIAction { action in
