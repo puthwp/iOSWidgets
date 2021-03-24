@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol PrimaryTextinput: UIView {
+protocol PrimaryTextInput: UIView {
     
     var titleLabel: UILabel { get set }
     var helpingTextLabel: UILabel { get set }
@@ -25,7 +25,6 @@ protocol PrimaryTextinput: UIView {
     var inputState: PrimaryInputState { get set }
     
     var error: PrimaryError? { get set }
-    var action: ((UITextField) -> Void)? { get set }
     var title: String? { get set }
     var helpingText: String { get set }
     var helpingTextIcon: UIImage? { get set }
@@ -42,7 +41,7 @@ protocol PrimaryTextinput: UIView {
     func notifyTextFieldDidEndEdit(_ notification: Notification)
 }
 
-extension PrimaryTextinput {
+extension PrimaryTextInput {
     
     var hasIconImage: Bool {
         return icon != nil
@@ -82,15 +81,6 @@ extension PrimaryTextinput {
         return textField?.placeholder?.isNotEmpty ?? false || textView?.placeholder?.isNotEmpty ?? false
     }
     
-    var inputState: PrimaryInputState {
-        set {
-            inputState = newValue
-            updateLayout()
-        }
-        get {
-            inputState
-        }
-    }
     
     var inputInset: UIEdgeInsets {
         var inset = TextFieldStateDesign.inputPadding
@@ -153,23 +143,34 @@ extension PrimaryTextinput {
     
     
     func notifyTextFieldIsBeginEditting(_ notification: Notification) {
-        guard let field = textField else {
-            return
-        }
-        if let textField = notification.object as? PrimaryTextinput {
+//        guard let field = textField else {
+//            return
+//        }
+        if let textField = notification.object as? PrimaryTextInput, textField == self {
             guard self.isEnabled else {
                 return 
             }
-            textField.error = nil
+            guard error == nil else {
+                return
+            }
             textField.inputState = .typing
             textField.hasActionButton ? {
-                textField.action?(field)
+                if let field = textField as? PrimaryTextField {
+                    field.action?(field)
+                }
+                if let view = textField as? PrimaryTextView {
+                    view.action?(view)
+                }
             }() : ()
         }
     }
     
     func notifyTextFieldDidEndEdit(_ notification: Notification){
-        if let textField = notification.object as? PrimaryTextinput {
+        if let textField = notification.object as? PrimaryTextInput, textField == self {
+            guard error == nil else {
+                textField.updateLayout()
+                return
+            }
             textField.inputState = textField.hasTextInput ? .typed : .idle
             textField.updateLayout()
         }
@@ -316,8 +317,8 @@ extension PrimaryTextinput {
     func updateLayoutByState() {
         switch inputState {
         case .idle:
-            titleTopConstraint.isActive = hasPlaceholder
-            titleLabel.font = hasPlaceholder ? TextFieldStateDesign.Focus.titleFont : TextFieldStateDesign.Normal.titleFont
+            titleTopConstraint.isActive = false
+            titleLabel.font = false ? TextFieldStateDesign.Focus.titleFont : TextFieldStateDesign.Normal.titleFont
             titleLabel.textColor = TextFieldStateDesign.Normal.titleColor
             self.layer.borderColor = TextFieldStateDesign.Normal.borderColor.cgColor
             self.backgroundColor = TextFieldStateDesign.Normal.backgroundColor
@@ -416,9 +417,9 @@ extension PrimaryTextinput {
     
     func createInputAccessories() -> UIView {
         let wrapper = UIView(frame: AccessoryView.wrapperSize)
-        wrapper.backgroundColor = .white
+        wrapper.backgroundColor = .secondaryGrey20
         
-        let doneButton = PrimarySmallButton(frame: AccessoryView.doneButtonSize)
+        let doneButton = GhostSmallButton(frame: AccessoryView.doneButtonSize)
         doneButton.setTitle("DONE", for: .normal)
         if #available(iOS 14.0, *) {
             let doneAction = UIAction { action in
@@ -433,6 +434,9 @@ extension PrimaryTextinput {
         let stackWrapper = UIStackView(arrangedSubviews: [
                                         doneButton
         ])
+        stackWrapper.axis = .vertical
+        stackWrapper.distribution = .fill
+        stackWrapper.alignment = .trailing
         stackWrapper.frame = wrapper.bounds
         stackWrapper.isLayoutMarginsRelativeArrangement = true
         stackWrapper.layoutMargins = AccessoryView.wrapperInset

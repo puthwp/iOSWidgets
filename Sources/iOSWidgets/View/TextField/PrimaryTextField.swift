@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
-public class PrimaryTextField: UITextField, PrimaryTextinput {
+public class PrimaryTextField: UITextField, PrimaryTextInput {
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
     var helpingTextIconImageView = UIImageView()
@@ -20,7 +20,11 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     public var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
     public var actionButton = UIButton()
-    public var inputState: PrimaryInputState = .idle
+    public var inputState: PrimaryInputState = .idle {
+        didSet {
+            helpingText = inputState.rawValue
+        }
+    }
     var tempPlaceholder: String?
     var tempHelpingText: String?
     var layerShape = CAShapeLayer()
@@ -32,7 +36,10 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
                 inputState = .error
                 helpingText = error.description ?? ""
             }else {
-                inputState = isFirstResponder ? (hasTextInput ? .typing : .focus) : .typed
+                inputState = isFirstResponder ? (hasTextInput ? .typing : .focus) : (hasTextInput ? .typed : .idle)
+                if isEnabled.revert {
+                    inputState = .disabled
+                }
                 helpingText = tempHelpingText ?? ""
             }
             updateLayout()
@@ -106,13 +113,15 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
         }
     }
     
-    public var action: ((UITextField) -> Void)?
+    public var action: ((PrimaryTextField) -> Void)?
     
     @IBInspectable public var enableInputAccessory: Bool = true {
         didSet{
             self.inputAccessoryView = enableInputAccessory ? createInputAccessories() : nil
         }
     }
+    
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -138,13 +147,16 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     
     public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
+        guard error == nil else {
+            return true
+        }
         inputState = hasTextInput ? .typing : .focus
         return true
     }
     
     public override func resignFirstResponder() -> Bool {
         super.resignFirstResponder()
-        guard inputState != .error else {
+        guard error == nil else {
             return true
         }
         inputState = hasTextInput ? .typed : .idle
@@ -166,6 +178,8 @@ public class PrimaryTextField: UITextField, PrimaryTextinput {
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
         ///
+//        error = nil
+//        inputState = .typing
     }
     
     @objc func keyboardDoneAction() {
