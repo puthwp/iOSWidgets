@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
-public class PrimaryTextView: UITextView, PrimaryTextinput {
+public class PrimaryTextView: UITextView, PrimaryTextInput {
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
     var helpingTextIconImageView = UIImageView()
@@ -37,7 +37,10 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
                 inputState = .error
                 helpingText = error.description ?? ""
             }else {
-                inputState = isFirstResponder ? ((text?.isNotEmpty ?? true) ? .typing : .focus) : .typed
+                inputState = isFirstResponder ? (hasTextInput ? .typing : .focus) : (hasTextInput ? .typed : .idle)
+                if isEnabled.revert {
+                    inputState = .disabled
+                }
                 helpingText = tempHelpingText ?? ""
             }
             updateLayout()
@@ -119,7 +122,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         }
     }
     
-    public var action: ((UITextField) -> Void)?
+    public var action: ((PrimaryTextView) -> Void)?
     
     @IBInspectable public var enableInputAccessory: Bool = true {
         didSet{
@@ -183,6 +186,9 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
         guard isEnabled else {
             return false
         }
+        guard error == nil else {
+            return true
+        }
         inputState = hasTextInput ? .typing : .focus
         placeHolderLabel.isHidden = text.isNotEmpty
         updateLayout()
@@ -191,7 +197,7 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     
     public override func resignFirstResponder() -> Bool {
         super.resignFirstResponder()
-        guard inputState != .error else {
+        guard error == nil else {
             return true
         }
         inputState = hasTextInput ? .typed : .idle
@@ -222,6 +228,6 @@ public class PrimaryTextView: UITextView, PrimaryTextinput {
     }
     
     @objc func keyboardDoneAction() {
-        self.resignFirstResponder()
+        _ = self.resignFirstResponder()
     }
 }

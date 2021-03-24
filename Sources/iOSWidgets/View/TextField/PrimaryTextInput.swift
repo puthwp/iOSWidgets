@@ -317,8 +317,8 @@ extension PrimaryTextInput {
     func updateLayoutByState() {
         switch inputState {
         case .idle:
-            titleTopConstraint.isActive = false
-            titleLabel.font = false ? TextFieldStateDesign.Focus.titleFont : TextFieldStateDesign.Normal.titleFont
+            titleTopConstraint.isActive = hasPlaceholder
+            titleLabel.font = hasPlaceholder ? TextFieldStateDesign.Focus.titleFont : TextFieldStateDesign.Normal.titleFont
             titleLabel.textColor = TextFieldStateDesign.Normal.titleColor
             self.layer.borderColor = TextFieldStateDesign.Normal.borderColor.cgColor
             self.backgroundColor = TextFieldStateDesign.Normal.backgroundColor

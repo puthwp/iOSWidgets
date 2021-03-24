@@ -20,11 +20,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
     public var heightConstraint = NSLayoutConstraint()
     var iconImageView = UIImageView()
     public var actionButton = UIButton()
-    public var inputState: PrimaryInputState = .idle {
-        didSet {
-            helpingText = inputState.rawValue
-        }
-    }
+    public var inputState: PrimaryInputState = .idle
     var tempPlaceholder: String?
     var tempHelpingText: String?
     var layerShape = CAShapeLayer()
@@ -183,7 +179,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
     }
     
     @objc func keyboardDoneAction() {
-        self.resignFirstResponder()
+        _ = self.resignFirstResponder()
     }
     
 }
