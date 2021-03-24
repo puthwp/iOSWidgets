@@ -10,6 +10,9 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextField: UITextField, PrimaryTextInput {
+    var descriptionLabel = UILabel()
+    var countingLabel = UILabel()
+    
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
     var helpingTextIconImageView = UIImageView()
@@ -117,6 +120,18 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         }
     }
     
+    @IBInspectable public var countingCharacter: Bool = false {
+        didSet {
+            createCountingText()
+        }
+    }
+    @IBInspectable public var descriptionText: String? {
+        didSet {
+            createDescriptionLabel()
+            setDescriptionText(descriptionText)
+        }
+    }
+    
     
     
     override init(frame: CGRect) {
@@ -173,9 +188,10 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
     }
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
-        ///
-//        error = nil
-//        inputState = .typing
+        guard let textField = notification.object as? PrimaryTextField, textField == self else {
+            return
+        }
+        textField.updateCountingCharacter(text: textField.text)
     }
     
     @objc func keyboardDoneAction() {

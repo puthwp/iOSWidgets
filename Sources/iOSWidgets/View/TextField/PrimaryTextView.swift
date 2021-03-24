@@ -10,6 +10,9 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextView: UITextView, PrimaryTextInput {
+    var descriptionLabel = UILabel()
+    var countingLabel = UILabel()
+    
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
     var helpingTextIconImageView = UIImageView()
@@ -130,6 +133,18 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         }
     }
     
+    @IBInspectable public var countingCharacter: Bool = false {
+        didSet {
+            createCountingText()
+        }
+    }
+    @IBInspectable public var descriptionText: String? {
+        didSet {
+            createDescriptionLabel()
+            setDescriptionText(descriptionText)
+        }
+    }
+    
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         commonInit()
@@ -156,11 +171,12 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
     }
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
-        inputState = hasTextInput ? .typing : .focus
-        placeHolderLabel.isHidden = self.text.isNotEmpty
         guard notification.object as! NSObject == self else {
             return
         }
+        inputState = hasTextInput ? .typing : .focus
+        updateCountingCharacter(text: self.text)
+        placeHolderLabel.isHidden = self.text.isNotEmpty
         let textSize = self.sizeThatFits(self.bounds.size).height
         heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
         updateLayout()

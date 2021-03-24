@@ -23,6 +23,8 @@ protocol PrimaryTextInput: UIView {
     var tempPlaceholder: String?  { get set }
     var tempHelpingText: String? { get set }
     var inputState: PrimaryInputState { get set }
+    var countingCharacter: Bool { get set }
+    var descriptionText: String? { get set }
     
     var error: PrimaryError? { get set }
     var title: String? { get set }
@@ -35,6 +37,8 @@ protocol PrimaryTextInput: UIView {
     var actionIconSelected: UIImage? { get set }
     var layerShape: CAShapeLayer { get  set }
     var helpingTextStackView: UIStackView? { get set }
+    var descriptionLabel: UILabel { get set }
+    var countingLabel: UILabel { get set }
     
     func notifyTextFieldIsEditting(_ notification: Notification)
     func notifyTextFieldIsBeginEditting(_ notification: Notification)
@@ -101,6 +105,9 @@ extension PrimaryTextInput {
         createIconImageView()
         createActionButton()
         setupLayout()
+        createCountingText()
+        createHelpingText()
+        createDescriptionLabel()
         tempPlaceholder = textField?.placeholder
         setPlaceHolder(input: tempPlaceholder)
         inputState = hasTextInput ? .typed : .idle
@@ -143,9 +150,6 @@ extension PrimaryTextInput {
     
     
     func notifyTextFieldIsBeginEditting(_ notification: Notification) {
-//        guard let field = textField else {
-//            return
-//        }
         if let textField = notification.object as? PrimaryTextInput, textField == self {
             guard self.isEnabled else {
                 return 
@@ -154,6 +158,8 @@ extension PrimaryTextInput {
                 return
             }
             textField.inputState = .typing
+            
+            textField.updateCountingCharacter(text: textField.textField?.text ?? textField.textView?.text)
             textField.hasActionButton ? {
                 if let field = textField as? PrimaryTextField {
                     field.action?(field)
@@ -172,6 +178,7 @@ extension PrimaryTextInput {
                 return
             }
             textField.inputState = textField.hasTextInput ? .typed : .idle
+            textField.countingLabel.isHidden = true
             textField.updateLayout()
         }
     }
@@ -197,7 +204,7 @@ extension PrimaryTextInput {
     }
     
     func createHelpingText() {
-        guard helpingText.isNotEmpty, helpingTextLabel.superview == nil else {
+        guard helpingTextLabel.superview == nil else {
             return
         }
         helpingTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -269,6 +276,35 @@ extension PrimaryTextInput {
         titleRightMargin.constant = inputInset.right
     }
     
+    func createDescriptionLabel() {
+        guard descriptionLabel.superview == nil else {
+            return
+        }
+        descriptionLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 16))
+        descriptionLabel.textColor = .primaryTrustedNavy
+        descriptionLabel.font = TextCountingDesign.font
+        if helpingTextStackView?.superview == nil {
+            createHelpingText()
+        }
+        helpingTextStackView?.addArrangedSubview(descriptionLabel)
+    }
+    
+    func createCountingText() {
+        guard countingLabel.superview == nil else {
+            return
+        }
+        countingLabel = UILabel(frame: .zero)
+        countingLabel.translatesAutoresizingMaskIntoConstraints = false
+        countingLabel.textColor = TextCountingDesign.color
+        countingLabel.font = TextCountingDesign.font
+        self.addSubview(countingLabel)
+        NSLayoutConstraint.activate([
+            countingLabel.heightAnchor.constraint(equalToConstant: TextCountingDesign.height),
+            countingLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -TextCountingDesign.leftMargin),
+            countingLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: TextCountingDesign.topMargin)
+        ])
+    }
+    
     func setHelpingText(_ text: String) {
         let attrText = NSMutableAttributedString(string: text)
         let paragraph = NSMutableParagraphStyle()
@@ -279,6 +315,22 @@ extension PrimaryTextInput {
         if inputState != .error {
             tempHelpingText = text
         }
+    }
+    
+    func setDescriptionText(_ text: String?) {
+        descriptionLabel.textAlignment = .right
+        descriptionLabel.text = text
+    }
+    
+    func updateCountingCharacter(text: String?) {
+        countingLabel.isHidden = self.countingCharacter.revert
+        let count = text?.utf16.count ?? 0
+        countingLabel.isHidden = (count == 0)
+        guard self.countingCharacter else {
+            return
+        }
+        countingLabel.text = String(format: "%d/%d", count, maximumLength)
+        countingLabel.textColor = count <= maximumLength ? TextCountingDesign.color : .red
     }
     
     func setPlaceHolder(input: String?) {

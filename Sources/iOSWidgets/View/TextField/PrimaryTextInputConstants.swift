@@ -38,6 +38,14 @@ enum TextOptionalDesign {
     }
 }
 
+enum TextCountingDesign {
+    static let font = UIFont.labelGreyLeft
+    static let topMargin: CGFloat = 8.0
+    static let height: CGFloat = 16.0
+    static let leftMargin: CGFloat = 12
+    static let color = UIColor.textFieldCounting
+}
+
 enum TextFieldStateDesign {
     static let height: CGFloat = 60
     static let border: CGFloat = 1

@@ -283,5 +283,9 @@ extension UIColor {
     @nonobjc public class var textFieldPlaceHolder: UIColor {
         return UIColor(red: 158.0 / 255.0, green: 175.0 / 255.0, blue: 194.0 / 255.0, alpha: 1.0)
     }
+    
+    @nonobjc public class var textFieldCounting: UIColor {
+        return UIColor(red: 123.0 / 255.0, green: 138.0 / 255.0, blue: 158.0 / 255.0, alpha: 1.0)
+    }
 
 }
