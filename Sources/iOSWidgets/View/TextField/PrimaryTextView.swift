@@ -10,8 +10,9 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextView: UITextView, PrimaryTextInput {
-    var descriptionLabel = UILabel()
+    public var descriptionLabel = UILabel()
     var countingLabel = UILabel()
+    var borderLine = CAShapeLayer()
     
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()

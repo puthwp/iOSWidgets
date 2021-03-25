@@ -10,8 +10,9 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextField: UITextField, PrimaryTextInput {
-    var descriptionLabel = UILabel()
+    public var descriptionLabel = UILabel()
     var countingLabel = UILabel()
+    var borderLine = CAShapeLayer()
     
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
@@ -153,6 +154,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         if isEnabled.revert {
             inputState = .disabled
         }
+        invalidateIntrinsicContentSize()
         updateLayout()
     }
     

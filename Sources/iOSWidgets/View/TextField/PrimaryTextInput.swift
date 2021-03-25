@@ -36,6 +36,7 @@ protocol PrimaryTextInput: UIView {
     var actionIcon: UIImage? { get set }
     var actionIconSelected: UIImage? { get set }
     var layerShape: CAShapeLayer { get  set }
+    var borderLine: CAShapeLayer { get set }
     var helpingTextStackView: UIStackView? { get set }
     var descriptionLabel: UILabel { get set }
     var countingLabel: UILabel { get set }
@@ -94,6 +95,7 @@ extension PrimaryTextInput {
         inset.right = hasActionButton ?
             TextFieldStateDesign.inputPadding.right + TextFieldStateDesign.actionButtonSize.width + TextFieldStateDesign.smallGap :
             TextFieldStateDesign.inputPadding.right
+        inset.bottom = TextOptionalDesign.height + TextOptionalDesign.topMargin + TextFieldStateDesign.inputPadding.bottom
         return inset
     }
     
@@ -108,6 +110,7 @@ extension PrimaryTextInput {
         createCountingText()
         createHelpingText()
         createDescriptionLabel()
+        createBorder()
         tempPlaceholder = textField?.placeholder
         setPlaceHolder(input: tempPlaceholder)
         inputState = hasTextInput ? .typed : .idle
@@ -229,7 +232,7 @@ extension PrimaryTextInput {
         let metrics = ["top": heightConstraint.constant + TextOptionalDesign.topMargin, "height" : TextOptionalDesign.height]
         let views = ["stack": helpingTextStackView!, "self": self]
         let constraintH = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stack]-0-|", options: .directionLeftToRight, metrics: metrics, views: views)
-        let constraintV = NSLayoutConstraint.constraints(withVisualFormat: "V:|-top-[stack(>=height)]", options: .directionLeftToRight, metrics: metrics, views: views)
+        let constraintV = NSLayoutConstraint.constraints(withVisualFormat: "V:[stack(>=height)]-0-|", options: .directionLeftToRight, metrics: metrics, views: views)
         self.addConstraints(constraintV)
         self.addConstraints(constraintH)
         return
@@ -305,6 +308,15 @@ extension PrimaryTextInput {
         ])
     }
     
+    func createBorder() {
+        borderLine = CAShapeLayer()
+        borderLine.path = UIBezierPath(roundedRect: self.bounds.inset(by: TextFieldStateDesign.inputPadding), cornerRadius: TextFieldStateDesign.cornerRadius).cgPath
+        borderLine.fillColor = UIColor.clear.cgColor
+        borderLine.borderWidth = 1
+        borderLine.borderColor = UIColor.red.cgColor
+        self.layer.insertSublayer(borderLine, at: 0)
+    }
+    
     func setHelpingText(_ text: String) {
         let attrText = NSMutableAttributedString(string: text)
         let paragraph = NSMutableParagraphStyle()
@@ -348,7 +360,7 @@ extension PrimaryTextInput {
             heightConstraint = self.constraints.filter({ $0.firstAttribute == .height }).first!
             
         }else {
-            heightConstraint = self.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.height)
+            heightConstraint = self.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.height + TextOptionalDesign.height + TextOptionalDesign.topMargin)
             heightConstraint.isActive = true
         }
         self.textField?.borderStyle = .none
