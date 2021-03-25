@@ -187,6 +187,14 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         return bounds.inset(by: inputInset)
     }
     
+    public override var intrinsicContentSize: CGSize {
+        var size = super.intrinsicContentSize
+        if helpingText.isNotEmpty || descriptionText?.isNotEmpty ?? false || error != nil {
+            size.height += (TextOptionalDesign.height + TextOptionalDesign.topMargin)
+        }
+        return size
+    }
+    
     func notifyTextFieldIsEditting(_ notification: Notification) {
         guard let textField = notification.object as? PrimaryTextField, textField == self else {
             return
