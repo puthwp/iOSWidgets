@@ -33,7 +33,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
     private var placeholderLeading: NSLayoutConstraint?
     private var placeholderTrailing: NSLayoutConstraint?
     
-    private var initialHeight: CGFloat = 0
+    internal var initialHeight: CGFloat = 0
     
     public var error: PrimaryError? {
         didSet {
@@ -196,6 +196,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
         updateLayout()
         self.textContainerInset = inputInset
+        resizeBound()
     }
     
     public override func becomeFirstResponder() -> Bool {

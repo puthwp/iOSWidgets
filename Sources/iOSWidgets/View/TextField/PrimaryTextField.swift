@@ -10,6 +10,7 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextField: UITextField, PrimaryTextInput {
+    var initialHeight: CGFloat = 0
     public var descriptionLabel = UILabel()
     var countingLabel = UILabel()
     var borderLine = CAShapeLayer()
@@ -130,6 +131,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         didSet {
             createDescriptionLabel()
             setDescriptionText(descriptionText)
+            heightConstraint.constant = initialHeight + 20
         }
     }
     
@@ -156,6 +158,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         }
         invalidateIntrinsicContentSize()
         updateLayout()
+        resizeBound()
     }
     
     public override func becomeFirstResponder() -> Bool {
@@ -189,13 +192,13 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         return bounds.inset(by: inputInset)
     }
     
-    public override var intrinsicContentSize: CGSize {
-        var size = super.intrinsicContentSize
-        if helpingText.isNotEmpty || descriptionText?.isNotEmpty ?? false || error != nil {
-            size.height += (TextOptionalDesign.height + TextOptionalDesign.topMargin)
-        }
-        return size
-    }
+//    public override var intrinsicContentSize: CGSize {
+//        var size = super.intrinsicContentSize
+//        if hasTextUnder {
+//            size.height = initialHeight + (TextOptionalDesign.height + TextOptionalDesign.topMargin)
+//        }
+//        return size
+//    }
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
         guard let textField = notification.object as? PrimaryTextField, textField == self else {

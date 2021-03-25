@@ -40,6 +40,7 @@ protocol PrimaryTextInput: UIView {
     var helpingTextStackView: UIStackView? { get set }
     var descriptionLabel: UILabel { get set }
     var countingLabel: UILabel { get set }
+    var initialHeight: CGFloat { get set }
     
     func notifyTextFieldIsEditting(_ notification: Notification)
     func notifyTextFieldIsBeginEditting(_ notification: Notification)
@@ -86,6 +87,10 @@ extension PrimaryTextInput {
         return textField?.placeholder?.isNotEmpty ?? false || textView?.placeholder?.isNotEmpty ?? false
     }
     
+    var hasTextUnder: Bool {
+        return error != nil || helpingText.isNotEmpty || descriptionText?.isNotEmpty ?? false
+    }
+    
     
     var inputInset: UIEdgeInsets {
         var inset = TextFieldStateDesign.inputPadding
@@ -95,8 +100,12 @@ extension PrimaryTextInput {
         inset.right = hasActionButton ?
             TextFieldStateDesign.inputPadding.right + TextFieldStateDesign.actionButtonSize.width + TextFieldStateDesign.smallGap :
             TextFieldStateDesign.inputPadding.right
-        inset.bottom = TextOptionalDesign.height + TextOptionalDesign.topMargin + TextFieldStateDesign.inputPadding.bottom
+        inset.bottom = hasTextUnder ? TextOptionalDesign.height + TextOptionalDesign.topMargin + TextFieldStateDesign.inputPadding.bottom : TextFieldStateDesign.inputPadding.bottom
         return inset
+    }
+    
+    var newCenter: CGFloat {
+        return hasTextUnder ? -( max(helpingTextLabel.bounds.maxY, (TextOptionalDesign.height + TextOptionalDesign.topMargin)) / 2) : 0
     }
     
     //MARK: - Initialize
@@ -197,7 +206,7 @@ extension PrimaryTextInput {
         self.addSubview(titleLabel)
         
         titleTopConstraint = titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: TextFieldStateDesign.smallGap )
-        titleCenterConstraint = titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        titleCenterConstraint = titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: newCenter)
         titleLeftMargin = titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: inputInset.left)
         titleRightMargin = self.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: inputInset.right)
         
@@ -248,7 +257,7 @@ extension PrimaryTextInput {
             iconImageView.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.iconSize.height),
             iconImageView.widthAnchor.constraint(equalToConstant: TextFieldStateDesign.iconSize.width),
             iconImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: TextFieldStateDesign.horizentalPadding),
-            iconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
+            iconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: newCenter)
         ])
         iconImageView.image = image
         titleLeftMargin.constant = inputInset.left
@@ -261,17 +270,17 @@ extension PrimaryTextInput {
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         superview?.addSubview(actionButton)
         
-        let path = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
-        layerShape = CAShapeLayer()
-        layerShape.path = path
-        layerShape.fillColor = UIColor.clear.cgColor
-        self.layer.insertSublayer(layerShape, at: 0)
+//        let path = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
+//        layerShape = CAShapeLayer()
+//        layerShape.path = path
+//        layerShape.fillColor = UIColor.clear.cgColor
+//        self.layer.insertSublayer(layerShape, at: 0)
         
         NSLayoutConstraint.activate([
             actionButton.widthAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.width),
             actionButton.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.height),
             actionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -TextFieldStateDesign.horizentalPadding),
-            actionButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
+            actionButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: newCenter)
         ])
         
         actionButton.setImage(imageIcon, for: .normal)
@@ -308,16 +317,39 @@ extension PrimaryTextInput {
         ])
     }
     
+    var borderRect: CGRect {
+        let height = hasTextUnder ? (initialHeight - TextOptionalDesign.height + TextOptionalDesign.topMargin) : initialHeight
+        return CGRect(x: 0,
+                      y: 0,
+                      width: self.bounds.width,
+                      height: initialHeight)
+    }
+    
     func createBorder() {
         borderLine = CAShapeLayer()
-        borderLine.path = UIBezierPath(roundedRect: self.bounds.inset(by: TextFieldStateDesign.inputPadding), cornerRadius: TextFieldStateDesign.cornerRadius).cgPath
-        borderLine.fillColor = UIColor.clear.cgColor
-        borderLine.borderWidth = 1
-        borderLine.borderColor = UIColor.red.cgColor
-        self.layer.insertSublayer(borderLine, at: 0)
+        borderLine.path = UIBezierPath(roundedRect: borderRect, cornerRadius: TextFieldStateDesign.cornerRadius).cgPath
+        borderLine.fillColor = UIColor.primaryHonestWhite.cgColor
+        borderLine.lineWidth = 1
+        borderLine.strokeColor = UIColor.red.cgColor
+        self.layer.insertSublayer(borderLine, at: 1)
+    }
+    
+    func resizeBound() {
+        borderLine.path = UIBezierPath(roundedRect: borderRect, cornerRadius: TextFieldStateDesign.cornerRadius).cgPath
+    }
+    
+    var heightWithTextUnder: CGFloat {
+        return initialHeight + TextOptionalDesign.height + TextOptionalDesign.topMargin
+    }
+    
+    var realHeight: CGFloat {
+        return hasTextUnder ? heightWithTextUnder : initialHeight
     }
     
     func setHelpingText(_ text: String) {
+        heightConstraint.constant = realHeight
+        descriptionLabel.isHidden = true
+        helpingTextLabel.isHidden = false
         let attrText = NSMutableAttributedString(string: text)
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineSpacing = 0
@@ -330,6 +362,9 @@ extension PrimaryTextInput {
     }
     
     func setDescriptionText(_ text: String?) {
+        heightConstraint.constant = realHeight
+        helpingTextLabel.isHidden = true
+        descriptionLabel.isHidden = false
         descriptionLabel.textAlignment = .right
         descriptionLabel.text = text
     }
@@ -349,7 +384,7 @@ extension PrimaryTextInput {
         let attributePlaceholder =  NSAttributedString(string: input ?? "",
                                                        attributes: [
                                                         NSAttributedString.Key.foregroundColor: TextFieldStateDesign.Normal.contentTextColor,
-                                                        NSAttributedString.Key.font: self.textField?.font!
+                                                        NSAttributedString.Key.font: self.textField?.font! as Any
                                                        ])
         textField?.attributedPlaceholder = attributePlaceholder
     }
@@ -360,14 +395,17 @@ extension PrimaryTextInput {
             heightConstraint = self.constraints.filter({ $0.firstAttribute == .height }).first!
             
         }else {
-            heightConstraint = self.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.height + TextOptionalDesign.height + TextOptionalDesign.topMargin)
+            let trueHeight = hasTextUnder ? TextFieldStateDesign.height + TextOptionalDesign.height + TextOptionalDesign.topMargin : TextFieldStateDesign.height
+            heightConstraint = self.heightAnchor.constraint(equalToConstant: trueHeight)
             heightConstraint.isActive = true
         }
+        initialHeight = heightConstraint.constant
         self.textField?.borderStyle = .none
-        self.backgroundColor = TextFieldStateDesign.Normal.backgroundColor
+        self.backgroundColor = .clear
+        self.borderLine.fillColor = TextFieldStateDesign.Normal.backgroundColor.cgColor
         self.view?.layer.cornerRadius = TextFieldStateDesign.cornerRadius
-        self.view?.layer.borderWidth = TextFieldStateDesign.border
-        self.view?.layer.borderColor = TextFieldStateDesign.Normal.borderColor.cgColor
+        self.borderLine.lineWidth = TextFieldStateDesign.border
+        self.borderLine.strokeColor = TextFieldStateDesign.Normal.borderColor.cgColor
         
         self.textField?.font = TextFieldStateDesign.Normal.contentFont
         self.textField?.textColor = TextFieldStateDesign.Normal.contentTextColor
@@ -384,8 +422,8 @@ extension PrimaryTextInput {
             titleTopConstraint.isActive = hasPlaceholder
             titleLabel.font = hasPlaceholder ? TextFieldStateDesign.Focus.titleFont : TextFieldStateDesign.Normal.titleFont
             titleLabel.textColor = TextFieldStateDesign.Normal.titleColor
-            self.layer.borderColor = TextFieldStateDesign.Normal.borderColor.cgColor
-            self.backgroundColor = TextFieldStateDesign.Normal.backgroundColor
+            self.borderLine.strokeColor = TextFieldStateDesign.Normal.borderColor.cgColor
+            self.borderLine.fillColor = TextFieldStateDesign.Normal.backgroundColor.cgColor
             textField?.textColor = TextFieldStateDesign.Normal.contentTextColor
             textView?.textColor = TextFieldStateDesign.Normal.contentTextColor
             
@@ -395,8 +433,8 @@ extension PrimaryTextInput {
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Focus.titleFont
             titleLabel.textColor = TextFieldStateDesign.Focus.titleColor
-            self.layer.borderColor = TextFieldStateDesign.Focus.borderColor.cgColor
-            self.backgroundColor = TextFieldStateDesign.Focus.backgroundColor
+            self.borderLine.strokeColor = TextFieldStateDesign.Focus.borderColor.cgColor
+            self.borderLine.fillColor = TextFieldStateDesign.Focus.backgroundColor.cgColor
             textField?.textColor = TextFieldStateDesign.Focus.contentTextColor
             textView?.textColor = TextFieldStateDesign.Focus.contentTextColor
             
@@ -407,8 +445,8 @@ extension PrimaryTextInput {
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Typing.titleFont
             titleLabel.textColor = TextFieldStateDesign.Typing.titleColor
-            self.layer.borderColor = TextFieldStateDesign.Typing.borderColor.cgColor
-            self.backgroundColor = TextFieldStateDesign.Typing.backgroundColor
+            self.borderLine.strokeColor = TextFieldStateDesign.Typing.borderColor.cgColor
+            self.borderLine.fillColor = TextFieldStateDesign.Typing.backgroundColor.cgColor
             textField?.textColor = TextFieldStateDesign.Typing.contentTextColor
             textView?.textColor = TextFieldStateDesign.Typing.contentTextColor
             
@@ -419,8 +457,8 @@ extension PrimaryTextInput {
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Typed.titleFont
             titleLabel.textColor = TextFieldStateDesign.Typed.titleColor
-            self.layer.borderColor = TextFieldStateDesign.Typed.borderColor.cgColor
-            self.backgroundColor = TextFieldStateDesign.Typed.backgroundColor
+            self.borderLine.strokeColor = TextFieldStateDesign.Typed.borderColor.cgColor
+            self.borderLine.fillColor = TextFieldStateDesign.Typed.backgroundColor.cgColor
             textField?.textColor = TextFieldStateDesign.Typed.contentTextColor
             textView?.textColor = TextFieldStateDesign.Typed.contentTextColor
             
@@ -431,8 +469,8 @@ extension PrimaryTextInput {
             titleTopConstraint.isActive = hasTextInput || hasPlaceholder
             titleLabel.font = hasTextInput || hasPlaceholder ? TextFieldStateDesign.Disable.titleSmall : TextFieldStateDesign.Normal.titleFont
             titleLabel.textColor = TextFieldStateDesign.Disable.titleColor
-            self.layer.borderColor = TextFieldStateDesign.Disable.borderColor.cgColor
-            self.backgroundColor = TextFieldStateDesign.Disable.backgroundColor
+            self.borderLine.strokeColor = TextFieldStateDesign.Disable.borderColor.cgColor
+            self.borderLine.fillColor = TextFieldStateDesign.Disable.backgroundColor.cgColor
             textField?.textColor = TextFieldStateDesign.Disable.contentTextColor
             textView?.textColor = TextFieldStateDesign.Disable.contentTextColor
             
@@ -443,8 +481,8 @@ extension PrimaryTextInput {
             titleTopConstraint.isActive = true
             titleLabel.font = TextFieldStateDesign.Error.titleFont
             titleLabel.textColor = TextFieldStateDesign.Error.titleColor
-            self.layer.borderColor = TextFieldStateDesign.Error.borderColor.cgColor
-            self.backgroundColor = TextFieldStateDesign.Error.backgroundColor
+            self.borderLine.strokeColor = TextFieldStateDesign.Error.borderColor.cgColor
+            self.borderLine.fillColor = TextFieldStateDesign.Error.backgroundColor.cgColor
             textField?.textColor = TextFieldStateDesign.Error.contentTextColor
             textView?.textColor = TextFieldStateDesign.Error.contentTextColor
             
@@ -461,6 +499,9 @@ extension PrimaryTextInput {
         actionButton.isSelected = (inputState == .focus)
         actionButton.alpha = (inputState == .disabled) ? 0.5 : 1
         iconImageView.alpha = (inputState == .disabled) ? 0.5 : 1
+        
+        titleCenterConstraint.constant = newCenter
+        
         updateLayoutByState()
         
         if self.inputState != .error, let temp = self.tempHelpingText, temp.isNotEmpty {
