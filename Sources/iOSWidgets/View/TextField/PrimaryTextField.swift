@@ -44,6 +44,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
                 helpingText = tempHelpingText ?? ""
             }
             updateLayout()
+            heightConstraint.constant = realHeight
         }
     }
     
@@ -70,6 +71,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         didSet {
             createHelpingText()
             setHelpingText(helpingText)
+            heightConstraint.constant = realHeight
         }
     }
     
@@ -77,6 +79,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         didSet {
             createHelpingText()
             helpingTextIconImageView.image = helpingTextIcon
+            heightConstraint.constant = realHeight
         }
     }
     
@@ -131,7 +134,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         didSet {
             createDescriptionLabel()
             setDescriptionText(descriptionText)
-            heightConstraint.constant = initialHeight + 20
+            heightConstraint.constant = realHeight
         }
     }
     

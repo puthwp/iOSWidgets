@@ -91,6 +91,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         didSet {
             createHelpingText()
             setHelpingText(helpingText)
+            heightConstraint.constant = realHeight
         }
     }
     
@@ -98,6 +99,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         didSet {
             createHelpingText()
             helpingTextIconImageView.image = helpingTextIcon
+            heightConstraint.constant = realHeight
         }
     }
     
@@ -143,6 +145,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         didSet {
             createDescriptionLabel()
             setDescriptionText(descriptionText)
+            heightConstraint.constant = realHeight
         }
     }
     
@@ -192,11 +195,12 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         if isEnabled.revert {
             inputState = .disabled
         }
-        let textSize = self.sizeThatFits(self.bounds.size).height
-        heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
+//        let textSize = self.sizeThatFits(self.bounds.size).height
+//        heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
         updateLayout()
         self.textContainerInset = inputInset
         resizeBound()
+        helpingTextStackView?.frame = CGRect(x: 0, y: self.bounds.height - 20, width: self.intrinsicContentSize.width, height: 20)
     }
     
     public override func becomeFirstResponder() -> Bool {

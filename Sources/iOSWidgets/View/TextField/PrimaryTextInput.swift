@@ -270,12 +270,6 @@ extension PrimaryTextInput {
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         superview?.addSubview(actionButton)
         
-//        let path = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
-//        layerShape = CAShapeLayer()
-//        layerShape.path = path
-//        layerShape.fillColor = UIColor.clear.cgColor
-//        self.layer.insertSublayer(layerShape, at: 0)
-        
         NSLayoutConstraint.activate([
             actionButton.widthAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.width),
             actionButton.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.height),
@@ -318,7 +312,6 @@ extension PrimaryTextInput {
     }
     
     var borderRect: CGRect {
-        let height = hasTextUnder ? (initialHeight - TextOptionalDesign.height + TextOptionalDesign.topMargin) : initialHeight
         return CGRect(x: 0,
                       y: 0,
                       width: self.bounds.width,
