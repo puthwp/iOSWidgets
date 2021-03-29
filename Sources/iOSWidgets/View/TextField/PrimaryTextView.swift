@@ -10,9 +10,6 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextView: UITextView, PrimaryTextInput {
-    public var descriptionLabel = UILabel()
-    var countingLabel = UILabel()
-    var borderLine = CAShapeLayer()
     
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
@@ -32,6 +29,11 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
     private let placeHolderLabel = UILabel(frame: .zero)
     private var placeholderLeading: NSLayoutConstraint?
     private var placeholderTrailing: NSLayoutConstraint?
+    public var descriptionLabel = UILabel()
+    var countingLabel = UILabel()
+    var borderLine = CAShapeLayer()
+    var currentHeight: CGFloat = 0
+    var maxHeight: CGFloat = UIScreen.main.bounds.height / 3
     
     internal var initialHeight: CGFloat = 0
     
@@ -130,9 +132,9 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
     
     public var action: ((PrimaryTextView) -> Void)?
     
-    @IBInspectable public var enableInputAccessory: Bool = true {
+    @IBInspectable public var inputAccessory: Bool = true {
         didSet{
-            self.inputAccessoryView = enableInputAccessory ? createInputAccessories() : nil
+            self.inputAccessoryView = inputAccessory ? createInputAccessories() : nil
         }
     }
     
@@ -147,6 +149,11 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
             setDescriptionText(descriptionText)
             heightConstraint.constant = realHeight
         }
+    }
+    
+    var dynamicHeight: CGFloat {
+        let textSize = self.sizeThatFits(self.bounds.size).height
+        return textSize > initialHeight ? (textSize > maxHeight ? maxHeight: textSize) : currentHeight
     }
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
@@ -172,6 +179,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         self.alwaysBounceHorizontal = false
         self.textContainer.lineFragmentPadding = 0
         initialHeight = heightConstraint.constant
+        currentHeight = heightConstraint.constant
     }
     
     func notifyTextFieldIsEditting(_ notification: Notification) {
@@ -181,8 +189,8 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         inputState = hasTextInput ? .typing : .focus
         updateCountingCharacter(text: self.text)
         placeHolderLabel.isHidden = self.text.isNotEmpty
-        let textSize = self.sizeThatFits(self.bounds.size).height
-        heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
+        currentHeight = dynamicHeight
+        heightConstraint.constant = currentHeight
         updateLayout()
     }
     
@@ -195,8 +203,9 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         if isEnabled.revert {
             inputState = .disabled
         }
-//        let textSize = self.sizeThatFits(self.bounds.size).height
-//        heightConstraint.constant = textSize > initialHeight ? textSize : initialHeight
+        
+        currentHeight = dynamicHeight
+        heightConstraint.constant = currentHeight
         updateLayout()
         self.textContainerInset = inputInset
         resizeBound()

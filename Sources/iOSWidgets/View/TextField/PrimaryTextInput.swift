@@ -41,6 +41,7 @@ protocol PrimaryTextInput: UIView {
     var descriptionLabel: UILabel { get set }
     var countingLabel: UILabel { get set }
     var initialHeight: CGFloat { get set }
+    var currentHeight: CGFloat { get set }
     
     func notifyTextFieldIsEditting(_ notification: Notification)
     func notifyTextFieldIsBeginEditting(_ notification: Notification)
@@ -220,6 +221,10 @@ extension PrimaryTextInput {
             return
         }
         helpingTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        helpingTextLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        helpingTextLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
+        helpingTextLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        helpingTextLabel.setContentCompressionResistancePriority(.dragThatCannotResizeScene, for: .horizontal)
         helpingTextLabel.numberOfLines = 2
         helpingTextLabel.font = TextOptionalDesign.font
         helpingTextLabel.textColor = TextOptionalDesign.Normal.color
@@ -289,6 +294,7 @@ extension PrimaryTextInput {
         descriptionLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 16))
         descriptionLabel.textColor = .primaryTrustedNavy
         descriptionLabel.font = TextCountingDesign.font
+        descriptionLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         if helpingTextStackView?.superview == nil {
             createHelpingText()
         }
@@ -315,7 +321,7 @@ extension PrimaryTextInput {
         return CGRect(x: 0,
                       y: 0,
                       width: self.bounds.width,
-                      height: initialHeight)
+                      height: currentHeight)
     }
     
     func createBorder() {
@@ -329,20 +335,21 @@ extension PrimaryTextInput {
     
     func resizeBound() {
         borderLine.path = UIBezierPath(roundedRect: borderRect, cornerRadius: TextFieldStateDesign.cornerRadius).cgPath
+        helpingTextStackView?.frame.size.width = borderRect.width
     }
     
     var heightWithTextUnder: CGFloat {
-        return initialHeight + TextOptionalDesign.height + TextOptionalDesign.topMargin
+        return currentHeight + TextOptionalDesign.height + TextOptionalDesign.topMargin
     }
     
     var realHeight: CGFloat {
-        return hasTextUnder ? heightWithTextUnder : initialHeight
+        return hasTextUnder ? heightWithTextUnder : currentHeight
     }
     
     func setHelpingText(_ text: String) {
         heightConstraint.constant = realHeight
-        descriptionLabel.isHidden = true
-        helpingTextLabel.isHidden = false
+        descriptionLabel.isHidden = descriptionText?.isEmpty ?? true
+        helpingTextLabel.isHidden = text.isEmpty
         let attrText = NSMutableAttributedString(string: text)
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineSpacing = 0
@@ -356,8 +363,8 @@ extension PrimaryTextInput {
     
     func setDescriptionText(_ text: String?) {
         heightConstraint.constant = realHeight
-        helpingTextLabel.isHidden = true
-        descriptionLabel.isHidden = false
+        helpingTextLabel.isHidden = helpingText.isEmpty
+        descriptionLabel.isHidden = text?.isEmpty ?? false
         descriptionLabel.textAlignment = .right
         descriptionLabel.text = text
     }

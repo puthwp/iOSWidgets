@@ -10,10 +10,6 @@ import UIKit
 
 @IBDesignable
 public class PrimaryTextField: UITextField, PrimaryTextInput {
-    var initialHeight: CGFloat = 0
-    public var descriptionLabel = UILabel()
-    var countingLabel = UILabel()
-    var borderLine = CAShapeLayer()
     
     var titleLabel = UILabel()
     var helpingTextLabel = UILabel()
@@ -30,6 +26,11 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
     var tempHelpingText: String?
     var layerShape = CAShapeLayer()
     var helpingTextStackView: UIStackView?
+    var initialHeight: CGFloat = 0
+    public var descriptionLabel = UILabel()
+    var countingLabel = UILabel()
+    var borderLine = CAShapeLayer()
+    var currentHeight: CGFloat = 0
     
     public var error: PrimaryError? {
         didSet {
@@ -119,9 +120,9 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
     
     public var action: ((PrimaryTextField) -> Void)?
     
-    @IBInspectable public var enableInputAccessory: Bool = true {
+    @IBInspectable public var inputAccessory: Bool = true {
         didSet{
-            self.inputAccessoryView = enableInputAccessory ? createInputAccessories() : nil
+            self.inputAccessoryView = inputAccessory ? createInputAccessories() : nil
         }
     }
     
