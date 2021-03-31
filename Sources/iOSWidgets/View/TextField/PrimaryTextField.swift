@@ -26,11 +26,11 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
     var tempHelpingText: String?
     var layerShape = CAShapeLayer()
     var helpingTextStackView: UIStackView?
-    var initialHeight: CGFloat = 0
     public var descriptionLabel = UILabel()
     var countingLabel = UILabel()
     var borderLine = CAShapeLayer()
     var currentHeight: CGFloat = 0
+    internal var initialHeight: CGFloat = 0
     
     public var error: PrimaryError? {
         didSet {
@@ -196,15 +196,7 @@ public class PrimaryTextField: UITextField, PrimaryTextInput {
         return bounds.inset(by: inputInset)
     }
     
-//    public override var intrinsicContentSize: CGSize {
-//        var size = super.intrinsicContentSize
-//        if hasTextUnder {
-//            size.height = initialHeight + (TextOptionalDesign.height + TextOptionalDesign.topMargin)
-//        }
-//        return size
-//    }
-    
-    func notifyTextFieldIsEditting(_ notification: Notification) {
+    func notifyTextFieldIsEditing(_ notification: Notification) {
         guard let textField = notification.object as? PrimaryTextField, textField == self else {
             return
         }

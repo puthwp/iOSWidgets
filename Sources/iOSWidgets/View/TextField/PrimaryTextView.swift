@@ -81,6 +81,13 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         }
     }
     
+    @IBInspectable public var maximumLength = 100
+    
+    @IBInspectable public var maximumLines: Int = 3 {
+        didSet {
+            titleLabel.text = title
+        }
+    }
     @IBInspectable var placeholder: String? {
         didSet {
             tempPlaceholder = placeholder
@@ -105,7 +112,6 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         }
     }
     
-    @IBInspectable public var maximumLength = 100
     @IBInspectable public var icon: UIImage? {
         didSet {
             createIconImageView()
@@ -153,7 +159,8 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
     
     var dynamicHeight: CGFloat {
         let textSize = self.sizeThatFits(self.bounds.size).height
-        return textSize > initialHeight ? (textSize > maxHeight ? maxHeight: textSize) : currentHeight
+        let expectedHeight =  (textSize > maxHeight ? maxHeight: textSize)
+        return textSize > initialHeight ? expectedHeight : currentHeight
     }
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
@@ -182,11 +189,10 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         currentHeight = heightConstraint.constant
     }
     
-    func notifyTextFieldIsEditting(_ notification: Notification) {
+    func notifyTextFieldIsEditing(_ notification: Notification) {
         guard notification.object as! NSObject == self else {
             return
         }
-        inputState = hasTextInput ? .typing : .focus
         updateCountingCharacter(text: self.text)
         placeHolderLabel.isHidden = self.text.isNotEmpty
         currentHeight = dynamicHeight
@@ -209,7 +215,6 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         updateLayout()
         self.textContainerInset = inputInset
         resizeBound()
-        helpingTextStackView?.frame = CGRect(x: 0, y: self.bounds.height - 20, width: self.intrinsicContentSize.width, height: 20)
     }
     
     public override func becomeFirstResponder() -> Bool {

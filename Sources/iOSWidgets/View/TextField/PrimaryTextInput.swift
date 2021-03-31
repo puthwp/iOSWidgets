@@ -43,8 +43,8 @@ protocol PrimaryTextInput: UIView {
     var initialHeight: CGFloat { get set }
     var currentHeight: CGFloat { get set }
     
-    func notifyTextFieldIsEditting(_ notification: Notification)
-    func notifyTextFieldIsBeginEditting(_ notification: Notification)
+    func notifyTextFieldIsEditing(_ notification: Notification)
+    func notifyTextFieldIsBeginEditing(_ notification: Notification)
     func notifyTextFieldDidEndEdit(_ notification: Notification)
 }
 
@@ -92,6 +92,26 @@ extension PrimaryTextInput {
         return error != nil || helpingText.isNotEmpty || descriptionText?.isNotEmpty ?? false
     }
     
+    var borderRect: CGRect {
+        return CGRect(x: 0,
+                      y: 0,
+                      width: self.bounds.width,
+                      height: hasTextUnder ? (currentHeight - TextOptionalDesign.height - TextOptionalDesign.topMargin) : currentHeight)
+    }
+    
+    var heightWithTextUnder: CGFloat {
+        currentHeight = initialHeight + TextOptionalDesign.height + TextOptionalDesign.topMargin
+        return currentHeight
+    }
+    var heightWithoutTextUnder: CGFloat {
+        currentHeight = initialHeight - TextOptionalDesign.height - TextOptionalDesign.topMargin
+        currentHeight = currentHeight < initialHeight ? initialHeight : currentHeight
+        return currentHeight
+    }
+    
+    var realHeight: CGFloat {
+        return hasTextUnder ? heightWithTextUnder : heightWithoutTextUnder
+    }
     
     var inputInset: UIEdgeInsets {
         var inset = TextFieldStateDesign.inputPadding
@@ -128,11 +148,11 @@ extension PrimaryTextInput {
     
     func addObservers() {
         NotificationCenter.default.addObserver(forName: UITextField.textDidBeginEditingNotification, object: nil, queue: .main) { (notification) in
-            self.notifyTextFieldIsBeginEditting(notification)
+            self.notifyTextFieldIsBeginEditing(notification)
         }
         
         NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: nil, queue: .main) { (notification) in
-            self.notifyTextFieldIsEditting(notification)
+            self.notifyTextFieldIsEditing(notification)
         }
         
         NotificationCenter.default.addObserver(forName: UITextField.textDidEndEditingNotification, object: nil, queue: .main) { (notification) in
@@ -142,11 +162,11 @@ extension PrimaryTextInput {
         
         //TextView
         NotificationCenter.default.addObserver(forName: UITextView.textDidBeginEditingNotification, object: nil, queue: .main) { (notification) in
-            self.notifyTextFieldIsBeginEditting(notification)
+            self.notifyTextFieldIsBeginEditing(notification)
         }
         
         NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: nil, queue: .main) { (notification) in
-            self.notifyTextFieldIsEditting(notification)
+            self.notifyTextFieldIsEditing(notification)
         }
         
         NotificationCenter.default.addObserver(forName: UITextView.textDidEndEditingNotification, object: nil, queue: .main) { (notification) in
@@ -162,7 +182,7 @@ extension PrimaryTextInput {
     }
     
     
-    func notifyTextFieldIsBeginEditting(_ notification: Notification) {
+    func notifyTextFieldIsBeginEditing(_ notification: Notification) {
         if let textField = notification.object as? PrimaryTextInput, textField == self {
             guard self.isEnabled else {
                 return 
@@ -241,6 +261,7 @@ extension PrimaryTextInput {
         helpingTextStackView?.distribution = .fill
         helpingTextStackView?.axis = .horizontal
         helpingTextStackView?.spacing = 4
+        helpingTextStackView?.setContentCompressionResistancePriority(.required, for: .horizontal)
     
         self.addSubview(helpingTextStackView!)
         let metrics = ["top": heightConstraint.constant + TextOptionalDesign.topMargin, "height" : TextOptionalDesign.height]
@@ -261,7 +282,7 @@ extension PrimaryTextInput {
         NSLayoutConstraint.activate([
             iconImageView.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.iconSize.height),
             iconImageView.widthAnchor.constraint(equalToConstant: TextFieldStateDesign.iconSize.width),
-            iconImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: TextFieldStateDesign.horizentalPadding),
+            iconImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: TextFieldStateDesign.horizontalPadding),
             iconImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: newCenter)
         ])
         iconImageView.image = image
@@ -278,7 +299,7 @@ extension PrimaryTextInput {
         NSLayoutConstraint.activate([
             actionButton.widthAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.width),
             actionButton.heightAnchor.constraint(equalToConstant: TextFieldStateDesign.actionButtonSize.height),
-            actionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -TextFieldStateDesign.horizentalPadding),
+            actionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -TextFieldStateDesign.horizontalPadding),
             actionButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: newCenter)
         ])
         
@@ -305,9 +326,10 @@ extension PrimaryTextInput {
         guard countingLabel.superview == nil else {
             return
         }
-        countingLabel = UILabel(frame: .zero)
+        countingLabel = UILabel(frame:.zero)
         countingLabel.translatesAutoresizingMaskIntoConstraints = false
         countingLabel.textColor = TextCountingDesign.color
+        countingLabel.textAlignment = .right
         countingLabel.font = TextCountingDesign.font
         self.addSubview(countingLabel)
         NSLayoutConstraint.activate([
@@ -315,13 +337,6 @@ extension PrimaryTextInput {
             countingLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -TextCountingDesign.leftMargin),
             countingLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: TextCountingDesign.topMargin)
         ])
-    }
-    
-    var borderRect: CGRect {
-        return CGRect(x: 0,
-                      y: 0,
-                      width: self.bounds.width,
-                      height: currentHeight)
     }
     
     func createBorder() {
@@ -335,15 +350,10 @@ extension PrimaryTextInput {
     
     func resizeBound() {
         borderLine.path = UIBezierPath(roundedRect: borderRect, cornerRadius: TextFieldStateDesign.cornerRadius).cgPath
-        helpingTextStackView?.frame.size.width = borderRect.width
-    }
-    
-    var heightWithTextUnder: CGFloat {
-        return currentHeight + TextOptionalDesign.height + TextOptionalDesign.topMargin
-    }
-    
-    var realHeight: CGFloat {
-        return hasTextUnder ? heightWithTextUnder : currentHeight
+        if textField == nil {
+            helpingTextStackView?.frame = CGRect(x: 0, y: self.bounds.height - TextOptionalDesign.topMargin - (helpingTextStackView?.frame.height ?? 0), width: self.bounds.width, height: TextOptionalDesign.height)
+            countingLabel.frame.origin = CGPoint(x: borderRect.width - countingLabel.frame.width - TextCountingDesign.leftMargin, y: TextCountingDesign.topMargin)            
+        }
     }
     
     func setHelpingText(_ text: String) {
@@ -400,6 +410,7 @@ extension PrimaryTextInput {
             heightConstraint.isActive = true
         }
         initialHeight = heightConstraint.constant
+        currentHeight = initialHeight
         self.textField?.borderStyle = .none
         self.backgroundColor = .clear
         self.borderLine.fillColor = TextFieldStateDesign.Normal.backgroundColor.cgColor

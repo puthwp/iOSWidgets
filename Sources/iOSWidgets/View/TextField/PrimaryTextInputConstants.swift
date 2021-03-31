@@ -53,7 +53,7 @@ enum TextFieldStateDesign {
     static let cornerRadius: CGFloat = 12
     static let contentFont = UIFont.paragraphSmallGreyLeft
     static let contentColor = UIColor.primaryTrustedNavy
-    static let horizentalPadding: CGFloat = 12
+    static let horizontalPadding: CGFloat = 12
     static let iconSize = CGSize(width: 24, height: 24)
     static let smallGap: CGFloat = 8
     static let actionButtonSize = CGSize(width: 24, height: 24)
