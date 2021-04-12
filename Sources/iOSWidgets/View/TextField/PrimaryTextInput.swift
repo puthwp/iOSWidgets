@@ -224,6 +224,7 @@ extension PrimaryTextInput {
         titleLabel.text = title
         titleLabel.font = TextFieldStateDesign.Normal.titleFont
         titleLabel.textColor = TextFieldStateDesign.Normal.titleColor
+        titleLabel.setContentCompressionResistancePriority(.dragThatCannotResizeScene, for: .horizontal)
         self.addSubview(titleLabel)
         
         titleTopConstraint = titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: TextFieldStateDesign.smallGap )
@@ -231,9 +232,12 @@ extension PrimaryTextInput {
         titleLeftMargin = titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: inputInset.left)
         titleRightMargin = self.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: inputInset.right)
         
-        titleCenterConstraint.isActive = true
-        titleLeftMargin.isActive = true
-        titleRightMargin.isActive = true
+        NSLayoutConstraint.activate([
+            titleCenterConstraint,
+            titleLeftMargin,
+            titleRightMargin,
+        ])
+        
     }
     
     func createHelpingText() {
@@ -272,6 +276,7 @@ extension PrimaryTextInput {
         self.addConstraints(constraintH)
         return
     }
+    
     
     func createIconImageView() {
         guard let image = icon, iconImageView.superview == nil else {
@@ -526,6 +531,7 @@ extension PrimaryTextInput {
         UIView.animate(withDuration: 0.2, delay: 0,
                        options: [.allowUserInteraction, .beginFromCurrentState]) {
             self.layoutIfNeeded()
+            self.superview?.layoutIfNeeded()
         } completion: { _ in
 
         }

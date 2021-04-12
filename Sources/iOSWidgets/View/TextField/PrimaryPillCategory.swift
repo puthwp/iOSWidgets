@@ -68,6 +68,7 @@ public class PrimaryPillCategory: UIView {
         
         scrollview.showsVerticalScrollIndicator = false
         scrollview.showsHorizontalScrollIndicator = false
+        scrollview.alwaysBounceVertical = false
         
         self.backgroundColor = .clear
         scrollview.backgroundColor = .clear

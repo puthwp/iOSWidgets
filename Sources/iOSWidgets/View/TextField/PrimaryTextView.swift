@@ -108,6 +108,7 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         didSet {
             createHelpingText()
             helpingTextIconImageView.image = helpingTextIcon
+            helpingTextIconImageView.isHidden = helpingTextIcon == nil
             heightConstraint.constant = realHeight
         }
     }
@@ -239,6 +240,40 @@ public class PrimaryTextView: UITextView, PrimaryTextInput {
         inputState = hasTextInput ? .typed : .idle
         placeHolderLabel.isHidden = text.isNotEmpty
         return true
+    }
+    
+    public override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        guard let view = superview else {
+            return
+        }
+        titleLabel.removeFromSuperview()
+        view.addSubview(titleLabel)
+        titleTopConstraint = titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: TextFieldStateDesign.smallGap )
+        titleCenterConstraint = titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: newCenter)
+        titleLeftMargin = titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: inputInset.left)
+        titleRightMargin = self.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: inputInset.right)
+        
+        NSLayoutConstraint.activate([
+            titleCenterConstraint,
+            titleLeftMargin,
+            titleRightMargin,
+        ])
+        
+//        helpingTextStackView?.removeFromSuperview()
+//        view.addSubview(helpingTextStackView!)
+//
+//        NSLayoutConstraint.activate([
+//            self.leadingAnchor.constraint(equalTo: helpingTextStackView!.leadingAnchor),
+//            self.trailingAnchor.constraint(equalTo: helpingTextStackView!.trailingAnchor),
+//            self.bottomAnchor.constraint(equalTo: helpingTextStackView!.bottomAnchor),
+//            helpingTextStackView!.heightAnchor.constraint(greaterThanOrEqualToConstant: TextOptionalDesign.height)
+//        ])
+    }
+    
+    public override func layoutMarginsDidChange() {
+        super.layoutMarginsDidChange()
+        helpingTextStackView?.layoutIfNeeded()
     }
     
     private func createPlaceholder(_ input: String?) {
