@@ -1,6 +1,4 @@
-<h1 id="one-design-ios-widgets">One Design iOS Widgets</h1>
-<p>Introduced by <strong>TMB Bank</strong> by creating iOS Component based on user daily use activity to aim for Clean cut design and easy to use in <strong>Daily Transactions</strong> <em>Do not use it for any commercials</em></p>
-<p>Created by Primary Banking1 iOS<br>
+<h1 id="one-design-ios-widgets">One Design iOS UI Element</h1>
 Last updated 23 Mar 2021</p>
 <h2 id="systems-requirements">Systems Requirements</h2>
 <ul>
